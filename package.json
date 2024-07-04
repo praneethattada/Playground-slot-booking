@@ -1,0 +1,78 @@
+{
+  "name": "pgbook",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/base": "^5.0.0-beta.2",
+    "@mui/lab": "^5.0.0-alpha.131",
+    "@mui/material": "^5.13.2",
+    "@mui/styled-engine": "^5.13.2",
+    "@mui/styled-engine-sc": "^5.12.0",
+    "@mui/system": "^5.13.2",
+    "@mui/x-date-pickers": "^6.5.0",
+    "@svgr/webpack": "^8.0.1",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "aos": "^2.3.4",
+    "axios": "^1.4.0",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "date-fns": "^2.30.0",
+    "framer-motion": "^10.12.14",
+    "json-server": "^0.17.3",
+    "mongodb": "^6.5.0",
+    "path-browserify": "^1.0.1",
+    "react": "^18.2.0",
+    "react-bootstrap-sweetalert": "^5.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.9",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^6.11.2",
+    "react-scripts": "5.0.1",
+    "react-switch": "^7.0.0",
+    "redux": "^4.2.1",
+    "styled-components": "^5.3.10",
+    "sweetalert2": "^11.7.5",
+    "uniqid": "^5.4.0",
+    "user-event": "^4.0.0",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": " react-scripts start",
+    "start-pc": "set PORT=3000&& react-scripts start",
+    "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "json-server": "json-server --watch db.json --port 3003",
+    "start:dev": "concurrently \"npm start\" \"npm run json-server\"",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "gh-pages": "^5.0.0",
+    "webpack": "^5.83.1"
+  }
+}

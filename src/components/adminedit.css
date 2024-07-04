@@ -1,0 +1,17 @@
+.btn5{
+    padding: 10px;
+    color: white;
+    font-size: large;
+    background-color: rgb(121, 31, 43);
+    /* color: white; */
+    box-shadow: 0 15px 18px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.btn6{
+    margin-top: 2%;
+    padding: 3px;
+    color: white;
+    font-size: large;
+    background-color: rgb(194, 138, 33);
+    box-shadow: 0 15px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}

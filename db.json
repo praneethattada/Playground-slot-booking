@@ -1,0 +1,411 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Clemen",
+      "email": "Nathan@yesenia.com",
+      "contact": "8292892929",
+      "password": "atahja"
+    },
+    {
+      "id": 2,
+      "name": "Patri",
+      "email": "Julianne.OConner@kory.org",
+      "contact": "8292892929",
+      "password": "atahja"
+    },
+    {
+      "id": 3,
+      "name": "Chels",
+      "email": "Lucio_Hettinger@annie.org",
+      "password": "atahja",
+      "contact": "8292892929"
+    },
+    {
+      "name": "Atharva Deshmukh",
+      "email": "deshmukhatharva01@gmail.com",
+      "password": "adss",
+      "contact": "8292892929",
+      "id": 4
+    },
+    {
+      "name": "Zzzz",
+      "email": "Nathan@yesenia.org",
+      "password": "djih",
+      "contact": "8279298793",
+      "id": 5
+    },
+    {
+      "name": "Atharva",
+      "email": "deshmukhatharva01@gmail.com",
+      "password": "adss",
+      "contact": "8279298793",
+      "id": 6
+    },
+    {
+      "name": "Nikhi",
+      "email": "nikhilsrivastavagems@gmail.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 7
+    },
+    {
+      "name": "Nikhil",
+      "email": "nikhilsrivastavagems@gmail.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 8
+    },
+    {
+      "name": "Nikhil",
+      "email": "nikhilsrivastavagems@gmail.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 9
+    },
+    {
+      "name": "Nikhil",
+      "email": "nikhil.srivastava3@globallogic.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 10
+    },
+    {
+      "name": "Nikhil",
+      "email": "nikhil.srivastava3@globallogic.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 11
+    },
+    {
+      "name": "Nikhil",
+      "email": "nikhilsrivastavagems@gmail.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 12
+    },
+    {
+      "name": "Nikhil",
+      "email": "nikhilsrivastavagems@gmail.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 13
+    },
+    {
+      "name": "Nikhil",
+      "email": "Admin@gmail.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 14
+    },
+    {
+      "name": "Nikhil",
+      "email": "Admin@gmail.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 15
+    },
+    {
+      "name": "Atharva",
+      "email": "mrunal@gmail.com",
+      "password": "12344321",
+      "contact": "8989898989",
+      "id": 16
+    },
+    {
+      "name": "Atharva",
+      "email": "mrunal@gmail.com",
+      "password": "12344321",
+      "contact": "8983832820",
+      "id": 17
+    }
+  ],
+  "admin": [
+    {
+      "id": 1,
+      "name": "Clamary",
+      "email": "Clamary@gmail.com",
+      "contact": "8292892981",
+      "password": "ataakj"
+    },
+    {
+      "id": 2,
+      "name": "Patrick",
+      "email": "Patrick@gl.org", 
+      "contact": "8292892929",
+      "password": "akjbhsa"
+    },
+    {
+      "name": "Goku",
+      "email": "goku@gmail.com",
+      "password": "goku123",
+      "contact": "9870687697",
+      "id": 3
+    },
+    {
+      "name": "Goku",
+      "email": "goku@gmail.com",
+      "password": "goku123",
+      "contact": "9870687697",
+      "id": 4
+    },
+    {
+      "name": "Nikhil",
+      "email": "jsv@d.com",
+      "password": "123",
+      "contact": "8080808080",
+      "id": 5
+    },
+    {
+      "name": "Nikhil",
+      "email": "soumokanti2025@gmail.com",
+      "password": "123443214",
+      "contact": "9000000000",
+      "id": 6
+    },
+    {
+      "name": "Nikhil",
+      "email": "soumokanti2025@gmail.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 7
+    },
+    {
+      "name": "Nikhil",
+      "email": "nikhil.srivastava3@globallogic.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 8
+    },
+    {
+      "name": "Nikhil",
+      "email": "nikhil.srivastava3@globallogic.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 9
+    },
+    {
+      "name": "Amandeep",
+      "email": "f@gmail.com",
+      "password": "12344321",
+      "contact": "6909090909",
+      "id": 10
+    },
+    {
+      "name": "Nikhil",
+      "email": "soumokanti2025@gmail.com",
+      "password": "12344321",
+      "contact": "9000000000",
+      "id": 11
+    },
+    {
+      "name": "Nikhil",
+      "email": "nikhilsrivastavagems@gmail.com",
+      "password": "12344321",
+      "contact": "9090909090",
+      "id": 12
+    },
+    {
+      "name": "Atharva",
+      "email": "deshmukhatharva01@gmail.com",
+      "password": "12344321",
+      "contact": "9870687697",
+      "id": 13
+    },
+    {
+      "name": "Atharva",
+      "email": "aa@gmail.com",
+      "password": "1234554321",
+      "contact": "8279298793",
+      "id": 14
+    },
+    {
+      "name": "Mahaka",
+      "email": "agrawalmahak516@gmail.com",
+      "password": "12345678",
+      "contact": "8433294280",
+      "id": 15
+    }
+  ],
+  "cities": [
+    {
+      "id": 1,
+      "city": "Noida",
+      "img": "https://images.timesproperty.com/blog/3915/invest_in_noida.jpg",
+      "playground": {
+        "grounds": [
+          "Jaypee Cricket Ground",
+          "Jaypee Football Ground"
+        ],
+        "img": [
+          "https://www.pcclean.io/wp-content/uploads/2020/4/vI3UB3.jpg",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW_BxH1o4EtDnZthNHwdZlEo8RW6zO8SNu9w&usqp=CAU"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "city": "Mumbai",
+      "img": "https://media.istockphoto.com/id/1307189136/photo/gateway-of-india-mumbai-maharashtra-monument-landmark-famous-place-magnificent-view-without.jpg?b=1&s=170667a&w=0&k=20&c=BLP7ZQkbok5etYvEF3obeqaG-5Sv06_kaqPfS8z9CS4=",
+      "playground": {
+        "grounds": [
+          "Wankhede Stadium",
+          "Brabourne Stadium"
+        ],
+        "img": [
+          "https://images.unsplash.com/photo-1607734834519-d8576ae60ea6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8d2Fua2hlZGUlMjBzdGFkaXVtJTJDJTIwbXVtYmFpJTJDJTIwaW5kaWF8ZW58MHx8MHx8&w=1000&q=80",
+          "https://cdn-wp.thesportsrush.com/2023/01/611f487e-vca-stadium-nagpur-test-match-tickets.jpg?w=3840&q=60"
+        ]
+      }
+    }
+  ],
+  "slots": [
+    {
+      "name": "Jaypee Football Ground",
+      "date": "2023-06-10",
+      "slot": [
+        "2:00pm-3:00pm",
+        "11:00am-12:00pm"
+      ],
+      "id": 1
+    },
+    {
+      "name": "Wankhede Stadium",
+      "date": "2023-06-06",
+      "slot": [
+        "5:00pm-6:00pm",
+        "6:00pm-7:00pm"
+      ],
+      "id": 2
+    },
+    {
+      "name": "Jaypee Cricket Ground",
+      "date": "2023-06-03",
+      "slot": [
+        "12:00pm-1:00pm",
+        "5:00pm-6:00pm",
+        "6:00pm-7:00pm"
+      ],
+      "id": 3
+    },
+    {
+      "name": "Wankhede Stadium",
+      "date": "2023-06-09",
+      "slot": [
+        "11:00am-12:00pm"
+      ],
+      "id": 4
+    },
+    {
+      "name": "Wankhede Stadium",
+      "date": "2023-06-04",
+      "slot": [
+        "8:00am-9:00am",
+        "9:00am-10:00am",
+        "10:00am-11:00am",
+        "11:00am-12:00pm"
+      ],
+      "id": 5
+    },
+    {
+      "name": "Jaypee Cricket Ground",
+      "date": "2023-06-29",
+      "slot": [
+        "10:00am-11:00am"
+      ],
+      "id": 6
+    }
+  ],
+  "postslots": [
+    {
+      "username": "soniya",
+      "name": "Jaypee Cricket Ground",
+      "date": "2023-06-07",
+      "slot": [
+        "8:00am-9:00pm",
+        "2:00pm-3:00pm"
+      ],
+      "id": 1
+    },
+    {
+      "username": "Atharva Deshmukh",
+      "name": "Jaypee Cricket Ground",
+      "date": "2023-06-31",
+      "slot": [
+        "8:00am-9:00am",
+        "9:00am-10:00am"
+      ],
+      "id": 2
+    },
+    {
+      "username": "Atharva Deshmukh",
+      "name": "Jaypee Cricket Ground",
+      "date": "2023-06-06",
+      "slot": [
+        "11:00am-12:00pm"
+      ],
+      "id": 3
+    },
+    {
+      "username": "Atharva Deshmukh",
+      "name": "Wankhede Stadium",
+      "date": "2023-06-06",
+      "slot": [
+        "12:00pm-1:00pm",
+        "2:00pm-3:00pm",
+        "5:00pm-6:00pm"
+      ],
+      "id": 4
+    },
+    {
+      "username": "Nikhi",
+      "name": "Jaypee Cricket Ground",
+      "date": "2023-06-03",
+      "slot": [
+        "10:00am-11:00am"
+      ],
+      "id": 5
+    },
+    {
+      "username": "Nikhi",
+      "name": "Wankhede Stadium",
+      "date": "2023-06-06",
+      "slot": [
+        "12:00pm-1:00pm"
+      ],
+      "id": 6
+    },
+    {
+      "username": "Atharva Deshmukh",
+      "name": "Jaypee Cricket Ground",
+      "date": "2023-06-30",
+      "slot": [],
+      "id": 7
+    },
+    {
+      "username": "Mahak Agrawal",
+      "name": "Jaypee Cricket Ground",
+      "date": "2023-06-29",
+      "slot": [
+        "12:00pm-1:00pm"
+      ],
+      "id": 8
+    }
+  ],
+  "admintime": [
+    {
+      "slots": [
+        "8:00am-9:00am",
+        "9:00am-10:00am",
+        "10:00am-11:00am",
+        "11:00am-12:00pm",
+        "12:00pm-1:00pm",
+        "2:00pm-3:00pm",
+        "3:00pm-4:00pm",
+        "5:00pm-6:00pm",
+        "6:00pm-7:00pm",
+        "8:00pm-9:00pm"
+      ]
+    }
+  ]
+}

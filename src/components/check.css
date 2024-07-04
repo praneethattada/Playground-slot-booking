@@ -1,0 +1,284 @@
+*{
+    /* background: linear-gradient(to bottom, #a19f9fcff 0%, #ffffff 100%); */
+    /* background-color: #002bff; */
+}
+.content{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin-top:200px;
+    top:0;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    color: white;
+  }
+  ul a{
+    text-decoration: none;
+    color: white;
+  }
+  ul{
+  list-style-type: none;
+  }
+  .contain {
+    position: relative;
+    width: 50%;
+    display: inline-block;
+    /* background-color: aqua; */
+    
+  }
+  /* body {
+    background-image: url("https://www.transparenttextures.com/patterns/gplay.png");;
+    
+  } */
+  .image {
+    opacity: 0.9;
+    display: grid;
+    width: 100%;
+    height: 200px;
+    transition: .5s ease; 
+    backface-visibility: hidden;
+    border-radius: 1rem;
+    margin-top: 30%;
+    margin-left: 40%;
+    margin-bottom: 60%;
+    box-shadow: 10px 10px 5px #a19f9f;
+      -moz-box-shadow: 10px 10px 5px #a19f9f;
+      -webkit-box-shadow: 10px 10px 5px #a19f9f;
+      -khtml-box-shadow: 10px 10px 5px #a19f9f;
+  }
+  .contain:hover .image {
+    opacity: 0.3;
+  }
+  
+  .contain:hover .middle {
+    opacity: 1;
+  }
+  /* .text {
+    
+    color: black;
+    font-size: 14px;
+    padding: 10px 16px;
+    margin-left: 30%;
+
+  } */
+  .middle {
+    transition: .5s ease;
+    opacity: 0.4;
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-35%, -180%);
+    -ms-transform: translate(-40%, -50%)
+  }
+
+
+
+
+  .text {
+    width: 220px;
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+}
+
+.text:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.text:active {
+    color: #000
+}
+
+.text:active:after {
+    background: transparent;
+}
+
+.text:hover:before {
+    opacity: 1;
+}
+
+.text:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+.image2{
+    border-radius: 5px;
+    box-shadow: 10px 10px 5px #a19f9f;
+      -moz-box-shadow: 10px 10px 5px #a19f9f;
+      -webkit-box-shadow: 10px 10px 5px #a19f9f;
+      -khtml-box-shadow: 10px 10px 5px #a19f9f;
+}
+
+
+ /* .btn{
+    margin-top: 80%;
+} */
+
+.ptext{
+    text-align: center;
+    margin-top: 2%;
+    margin-right: 40%;
+    font-size: 30px;
+} 
+
+.btn2 {
+  border-radius: 4px;
+  background-color:#a3712a ;
+  /* background-color:rgb(153, 153, 216); */
+  /* background-color: #a3712a ; */
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 20px;
+  padding-top: 10px;
+  padding-bottom: 5%;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  /* margin-top: 30px; */
+  /* margin-left: 40%; */
+}
+
+.btn2 span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+  margin-top: 20px;
+}
+
+.btn2 span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.btn2:hover span {
+  padding-right: 25px;
+  color: #000;
+}
+
+.btn2:hover span:after {
+  opacity: 1;
+  right: 0;
+  color: #000;
+}
+
+  div-image{
+    justify-content: center;
+    align-items: center;
+    display:flex;
+    padding-top:20%;
+    
+  }
+  /* img:hover{ */
+    /* border-color: #ff80ff;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(3, 1, 1, 0.708);
+    -webkit-transform: scale(0.8);
+  transition: 1s ease;  */
+
+  .img:hover {
+    border-color: #ff80ff;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(3, 1, 1, 0.708);
+    -ms-transform: scale(1.2);
+   -webkit-transform: scale(1.2);
+    transform: scale(1.2); 
+  } 
+
+  .imgbut{
+    position: relative;
+    text-align: center;
+  }
+
+  .img{
+    border-radius: 2rem;
+    transition: 1s ease;
+    box-shadow: 10px 10px 5px #a19f9f;
+      -moz-box-shadow: 10px 10px 5px #a19f9f;
+      -webkit-box-shadow: 10px 10px 5px #a19f9f;
+      -khtml-box-shadow: 10px 10px 5px #a19f9f;
+  }
+
+  
+.box-3{
+    transform: translate(20%,-70%);
+}
+.btn-three {
+    background-color: grey;
+    border-color: white;
+	color: white;
+	transition: all 0.5s;
+	position: relative;
+    align-items: center;
+    font-size: large;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.btn-three::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	background-color: rgba(243, 239, 239, 0.1);
+    /* background-color: #002bff; */
+	transition: all 0.3s;
+}
+.btn-three:hover::before {
+	opacity: 0 ;
+	transform: scale(0.5,0.5);
+}
+.btn-three::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	opacity: 0;
+	transition: all 0.3s;
+	border: 1px solid rgba(168, 167, 167, 0.5);
+	transform: scale(1.2,1.2);
+    /* background-color: #a19f9f; */
+}
+.btn-three:hover::after {
+	opacity: 1;
+	transform: scale(1,1);
+}
