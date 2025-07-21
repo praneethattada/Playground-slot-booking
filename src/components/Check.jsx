@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import "./check.css";
 
 // A small, reusable component to display stars
 const StarRating = ({ rating, count }) => {
-  if (!rating) {
+  if (rating === undefined || rating === null) {
     return <div className="rating-display">No reviews yet</div>;
   }
   const fullStars = Math.round(rating);
@@ -22,20 +21,17 @@ const StarRating = ({ rating, count }) => {
 
 const Check = () => {
   const [cities, setCities] = useState([]);
-  const [ratings, setRatings] = useState([]); // State to hold review data
-  const [playground, setPlaygrounds] = useState([]);
-  const [playgroundImg, setPlaygroundImages] = useState([]);
+  const [ratings, setRatings] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(null); // Store the full city object
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const dispatch = useDispatch();
-  const playgroundRef = useRef(null);
+  const playgroundsRef = useRef(null);
 
-  // Load cities and reviews data
+  // Load cities and reviews data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch both cities and reviews at the same time for efficiency
         const [citiesRes, ratingsRes] = await Promise.all([
           axios.get("http://localhost:3003/cities"),
           axios.get("http://localhost:3003/reviews")
@@ -58,24 +54,12 @@ const Check = () => {
     fetchData();
   }, []);
 
-  // Update Redux store when playground data changes
-  useEffect(() => {
-    dispatch({ type: "PLAYGROUND", payload: playground });
-    dispatch({ type: "PLAYGROUNDIMAGES", payload: playgroundImg });
-  }, [playground, playgroundImg, dispatch]);
-
   // View playground for a specific city
-  const viewPlayground = (index) => {
-    if (cities[index]?.playground) {
-      setPlaygrounds(cities[index].playground.grounds || []);
-      setPlaygroundImages(cities[index].playground.img || []);
-      playgroundRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  // Send index to Redux store
-  const sendIndex = (index) => {
-    dispatch({ type: "INDEX", payload: index });
+  const viewPlayground = (city) => {
+    setSelectedCity(city);
+    setTimeout(() => {
+        playgroundsRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   if (loading) {
@@ -91,7 +75,7 @@ const Check = () => {
     return (
       <div className="error-container">
         <p className="error-message">{error}</p>
-        <button
+        <button 
           className="retry-button"
           onClick={() => window.location.reload()}
         >
@@ -105,12 +89,9 @@ const Check = () => {
     <div className="check-container">
       {/* Cities Section */}
       <div className="cities-grid">
-        {cities.map((city, index) => (
-          <div key={city._id || index} className="city-card">
-            <div
-              className="city-image-container"
-              onClick={() => viewPlayground(index)}
-            >
+        {cities.map((city) => (
+          <div key={city._id} className="city-card" onClick={() => viewPlayground(city)}>
+            <div className="city-image-container">
               <img
                 src={city.img}
                 alt={city.city}
@@ -118,13 +99,7 @@ const Check = () => {
               />
               <div className="city-overlay">
                 <div className="box-3">
-                  <div
-                    className="btn btn-three"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      viewPlayground(index);
-                    }}
-                  >
+                  <div className="btn btn-three">
                     <span>{city.city}</span>
                   </div>
                 </div>
@@ -135,29 +110,27 @@ const Check = () => {
       </div>
 
       {/* Playgrounds Section */}
-      <div ref={playgroundRef} className="playgrounds-section">
-        {playground.length > 0 ? (
+      <div ref={playgroundsRef} className="playgrounds-section">
+        {selectedCity ? (
           <div className="playgrounds-container">
-            {playground.map((ground, index) => {
-              // Find the rating data for the current playground
-              const groundRating = ratings.find(r => r._id === ground);
+            <h2>Playgrounds in {selectedCity.city}</h2>
+            {selectedCity.playground.grounds.map((groundName, index) => {
+              const groundRating = ratings.find(r => r._id === groundName);
               return (
                 <div key={index} className="playground-card">
                   <div className="playground-image-container">
                     <img
-                      src={playgroundImg[index]}
-                      alt={ground}
+                      src={selectedCity.playground.img[index]}
+                      alt={groundName}
                       className="playground-image"
                     />
                   </div>
                   <div className="playground-info">
-                    <h3 className="playground-name">{ground}</h3>
-                    {/* Display the star rating */}
+                    <h3 className="playground-name">{groundName}</h3>
                     <StarRating rating={groundRating?.averageRating} count={groundRating?.reviewCount} />
                     <Link
-                      to={`/slotbooking/${index}`}
+                      to={`/slotbooking/${selectedCity._id}/${groundName}`}
                       className="slot-button"
-                      onClick={() => sendIndex(index)}
                     >
                       View Available Slots
                     </Link>

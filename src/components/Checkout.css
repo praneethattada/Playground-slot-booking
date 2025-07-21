@@ -1,0 +1,112 @@
+.checkout-container {
+  padding: 50px;
+  background-color: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.checkout-card {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  max-width: 900px;
+  width: 100%;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.order-summary {
+  padding: 40px;
+  background-color: #f8f9fa;
+}
+
+.order-summary h2 {
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 15px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+.summary-item span:first-child {
+  color: #6c757d;
+}
+.summary-item span:last-child {
+  font-weight: 600;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #dee2e6;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.payment-form {
+  padding: 40px;
+}
+
+.payment-form h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.payment-form p {
+  color: #6c757d;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+.form-row .form-group {
+  flex: 1;
+}
+
+.btn-pay {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+  background-color: #28a745;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .checkout-card {
+    grid-template-columns: 1fr;
+  }
+}

@@ -138,3 +138,17 @@
   cursor: not-allowed;
   transform: none;
 }
+/* Add this to your Slotbooking.css file */
+
+.date-and-weather-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 30px;
+}
+
+@media (max-width: 768px) {
+  .date-and-weather-container {
+    grid-template-columns: 1fr;
+  }
+}

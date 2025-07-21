@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3003;
-
+const axios = require('axios');
 // Security Middleware
 app.use(helmet());
 app.use(cors({
@@ -463,6 +463,38 @@ app.get('/my-reviews', authenticateToken, async (req, res) => {
     }
 });
 
+
+// In server.js, add this new endpoint
+
+// --- NEW: WEATHER FORECAST ENDPOINT ---
+app.get('/weather', async (req, res) => {
+  const { city } = req.query; // Expecting a city name, e.g., /weather?city=London
+
+  if (!city) {
+    return res.status(400).json({ success: false, message: 'City parameter is required.' });
+  }
+
+  const apiKey ="e934998efc100731d4eec56ff0546046";
+  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+  try {
+    const weatherResponse = await axios.get(apiUrl);
+    const weatherData = weatherResponse.data;
+
+    // We simplify the data before sending it to the frontend
+    const simplifiedData = {
+      temp: weatherData.main.temp,
+      description: weatherData.weather[0].description,
+      icon: weatherData.weather[0].icon,
+    };
+    
+    res.json({ success: true, data: simplifiedData });
+
+  } catch (error) {
+    console.error("Weather API error:", error.response?.data || error.message);
+    res.status(500).json({ success: false, message: 'Failed to fetch weather data.' });
+  }
+});
 // ========== ADMIN ENDPOINTS ========== //
 
 // In server.js

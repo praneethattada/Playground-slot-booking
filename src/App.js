@@ -28,6 +28,7 @@ import AdminManualBooking from './components/AdminManualBooking';
 import AdminApproval from './components/AdminApproval';
 import MyBookings from './components/MyBookings';
 import ResetPassword from './components/ResetPassword';
+import Checkout from './components/Checkout';
 
 
 
@@ -68,9 +69,10 @@ function App() {
         {/* --- Protected User Routes --- */}
         <Route element={<ProtectedRoute authType="user" />}>
           <Route path="/check" element={<AppCon><Check /></AppCon>} />
-          <Route path="/slotbooking/:index" element={<AppCon><SlotBooking /></AppCon>} />
-          <Route path="/bookingdetails/:idr/:index" element={<AppCon><BookingDetails /></AppCon>} />
+          <Route path="/slotbooking/:cityId/:groundName" element={<AppCon><SlotBooking /></AppCon>} />
+          <Route path="/bookingdetails/:idr" element={<AppCon><BookingDetails /></AppCon>} />
           <Route path="/my-bookings" element={<AppCon><MyBookings /></AppCon>} />
+          <Route path="/checkout" element={<AppCon><Checkout /></AppCon>} />
         </Route>
         
         {/* --- Protected Admin Routes --- */}
