@@ -1,112 +1,217 @@
+/* adminaddcities.css */
+
+:root {
+  --primary: #4a6bff;
+  --primary-light: #6a8cff;
+  --primary-dark: #3a5a8a;
+  --secondary: #ff7e5f;
+  --light: #f8f9fa;
+  --dark: #2d3748;
+  --gray: #718096;
+  --light-gray: #e2e8f0;
+  --success: #48bb78;
+  --error: #f56565;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Base Styles */
 .admin-add-cities-container {
-  display: flex;
-  justify-content: center;
-  padding: 40px;
-  background-color: #f4f7f6;
-  min-height: 100vh;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .add-city-form {
-  width: 100%;
-  max-width: 800px;
   background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  padding: 2.5rem;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+}
+
+.add-city-form:hover {
+  box-shadow: var(--box-shadow-hover);
 }
 
 .add-city-form h2 {
+  font-size: 1.8rem;
+  color: var(--dark);
+  margin-bottom: 2rem;
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 30px;
-  color: #333;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 1rem;
 }
 
+.add-city-form h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+/* Form Sections */
 .form-section {
-  margin-bottom: 30px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 30px;
-}
-
-.form-section:last-of-type {
-  border-bottom: none;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--light-gray);
 }
 
 .form-section h3 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: #555;
+  font-size: 1.3rem;
+  color: var(--dark);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
 }
 
+/* Form Groups */
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 1.5rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #555;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--gray);
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--light-gray);
+  border-radius: var(--border-radius);
   font-size: 1rem;
+  transition: var(--transition);
 }
 
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+}
+
+/* Playground Entries */
 .playground-entry {
-  background-color: #fafafa;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  margin-bottom: 20px;
+  background: var(--light);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
   position: relative;
 }
 
-.btn-remove {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
+.playground-entry h4 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--primary-dark);
+  font-size: 1.1rem;
 }
 
+/* Buttons */
 .btn-add {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  background-color: #3498db;
+  background-color: var(--primary);
   color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--border-radius);
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  margin-top: 10px;
+  transition: var(--transition);
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.btn-add:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(74, 107, 255, 0.3);
+}
+
+.btn-remove {
+  background-color: var(--error);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 1rem;
+}
+
+.btn-remove:hover {
+  background-color: #e53e3e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
 }
 
 .btn-submit {
-  display: block;
-  width: 100%;
-  padding: 15px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  background-color: #2ecc71;
+  background-color: var(--success);
   color: white;
+  padding: 1rem;
+  border-radius: var(--border-radius);
   border: none;
-  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: var(--transition);
+  width: 100%;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: #38a169;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
 }
 
 .btn-submit:disabled {
-  background-color: #ccc;
+  background-color: var(--light-gray);
+  color: var(--gray);
   cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .add-city-form {
+    padding: 1.5rem;
+  }
+  
+  .form-section {
+    margin-bottom: 2rem;
+  }
+  
+  .playground-entry {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-add-cities-container {
+    padding: 0.5rem;
+  }
+  
+  .add-city-form h2 {
+    font-size: 1.5rem;
+  }
+  
+  .form-group input {
+    padding: 0.7rem;
+  }
+  
+  .btn-add,
+  .btn-remove,
+  .btn-submit {
+    padding: 0.8rem;
+  }
 }

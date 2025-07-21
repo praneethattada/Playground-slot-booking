@@ -1,119 +1,202 @@
+/* adminaddslot.css */
+
+:root {
+  --primary: #4a6bff;
+  --primary-light: #6a8cff;
+  --primary-dark: #3a5a8a;
+  --secondary: #ff7e5f;
+  --light: #f8f9fa;
+  --dark: #2d3748;
+  --gray: #718096;
+  --light-gray: #e2e8f0;
+  --success: #48bb78;
+  --error: #d53f3f; /* Darker red */
+  --warning: #ed8936;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Base Styles */
 .admin-slots-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 40px;
-  background-color: #f9f9f9;
-  min-height: 100vh;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--dark);
 }
 
 .slot-form {
   background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 700px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
+  border-radius: var(--border-radius);
+  padding: 2.5rem;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
 }
 
+.slot-form:hover {
+  box-shadow: var(--box-shadow-hover);
+}
+
+/* Ground Info */
 .ground-info {
-  text-align: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
 .ground-name {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 .ground-image {
   width: 100%;
-  height: 300px;
+  max-width: 500px;
+  height: 250px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
+/* Date Picker */
 .date-picker-container {
+  margin: 2rem 0;
   display: flex;
   justify-content: center;
 }
 
+/* Slots Header */
 .slots-header {
+  font-size: 1.3rem;
+  color: var(--dark);
+  margin: 1.5rem 0;
+  font-weight: 600;
   text-align: center;
-  font-size: 1.5rem;
-  color: #555;
-  margin: 0;
 }
 
+/* Time Slots Container - Updated for 3 columns */
 .time-slots-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-  background-color: #fafafa;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns */
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .slot-checkbox {
-  background-color: #fff;
-  border-radius: 6px;
-  padding: 5px;
-  border: 1px solid #ddd;
-  transition: all 0.2s ease-in-out;
-}
-.slot-checkbox:hover {
-  border-color: #a3712a;
+  background-color: var(--light);
+  padding: 0.8rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+  display: flex;
+  justify-content: center;
 }
 
+.slot-checkbox:hover {
+  background-color: #f0f4ff;
+}
+
+.slot-checkbox.slot-booked {
+  background-color: #ffebeb; /* Lighter version of the error color */
+  border: 1px solid var(--error);
+}
+
+.MuiFormControlLabel-root {
+  margin: 0;
+  width: 100%;
+  justify-content: center;
+}
+
+.MuiFormControlLabel-label {
+  font-size: 0.95rem;
+}
+
+/* Submit Button */
 .submit-button {
-  padding: 15px 20px;
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--success);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
   font-size: 1.1rem;
   font-weight: 600;
-  color: white;
-  background-color: #a3712a;
-  border: none;
-  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  align-self: center;
-  width: 50%;
+  transition: var(--transition);
+  margin-top: 1rem;
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: #8c6021;
+  background-color: #38a169;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
 }
 
 .submit-button:disabled {
-  background-color: #ccc;
+  background-color: var(--light-gray);
+  color: var(--gray);
   cursor: not-allowed;
+  opacity: 0.8;
 }
 
-/* Error page styles */
+/* Error Page */
 .error-page {
   text-align: center;
-  padding: 50px;
+  padding: 2rem;
 }
 
 .error-page h2 {
-  font-size: 2rem;
-  color: #d9534f;
+  color: var(--error);
+  margin-bottom: 1rem;
 }
 
-.error-page p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .slot-form {
+    padding: 1.5rem;
+  }
+  
+  .ground-image {
+    height: 200px;
+  }
+  
+  .time-slots-container {
+    grid-template-columns: repeat(3, 1fr); /* Keep 3 columns on tablet */
+  }
 }
-/* Add this to your adminaddslot.css file */
 
-.slot-checkbox.slot-booked label .MuiTypography-root {
-  color: #d32f2f; /* Red color for text */
-  font-weight: 600;
-  text-decoration: line-through;
+@media (max-width: 480px) {
+  .admin-slots-container {
+    padding: 0.5rem;
+  }
+  
+  .ground-name {
+    font-size: 1.5rem;
+  }
+  
+  .slots-header {
+    font-size: 1.2rem;
+  }
+  
+  .time-slots-container {
+    grid-template-columns: repeat(3, 1fr); /* Keep 3 columns on mobile */
+    gap: 0.5rem;
+  }
+  
+  .submit-button {
+    padding: 0.9rem;
+    font-size: 1rem;
+  }
+  
+  .slot-checkbox {
+    padding: 0.6rem;
+  }
+  
+  .MuiFormControlLabel-label {
+    font-size: 0.85rem;
+  }
 }

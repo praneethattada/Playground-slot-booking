@@ -1,51 +1,104 @@
+/* WeatherWidget.css */
+
 .weather-widget {
-  background: linear-gradient(135deg, #6dd5ed, #2193b0);
-  color: white;
-  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  margin-top: 30px;
-  text-align: center;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  flex: 1;
+  min-width: 250px;
+  transition: all 0.3s ease;
 }
 
-.weather-widget.loading {
-  background: #e9ecef;
-  color: #6c757d;
+.weather-widget:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .weather-widget h4 {
-  margin: 0 0 15px 0;
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
   font-size: 1.1rem;
   font-weight: 600;
-  opacity: 0.9;
+  text-align: center;
 }
 
 .weather-content {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 15px;
+  justify-content: space-around;
 }
 
 .weather-icon {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .weather-details {
-  text-align: left;
+  text-align: center;
 }
 
 .temperature {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
+  color: #2c3e50;
   margin: 0;
   line-height: 1;
 }
 
 .description {
-  font-size: 1rem;
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin: 0.5rem 0 0 0;
   text-transform: capitalize;
-  margin: 0;
-  opacity: 0.9;
+}
+
+/* Loading State */
+.weather-widget.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+
+.weather-widget.loading p {
+  color: #4a5568;
+  font-size: 0.9rem;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .weather-widget {
+    min-width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .weather-content {
+    justify-content: center;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .weather-widget {
+    padding: 1rem;
+  }
+  
+  .temperature {
+    font-size: 1.8rem;
+  }
+  
+  .weather-icon {
+    width: 50px;
+    height: 50px;
+  }
 }

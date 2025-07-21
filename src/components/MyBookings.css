@@ -1,240 +1,257 @@
-/* --- Awesome My Bookings CSS (Complete) --- */
-:root {
-  --primary-color: #4a90e2;
-  --danger-color: #e74c3c;
-  --background-color: #f4f6f8;
-  --card-background: #ffffff;
-  --text-dark: #343a40;
-  --text-light: #6c757d;
-  --border-color: #eef2f7;
-}
+/* MyBookings.css */
 
+/* Base Styles */
 .my-bookings-container-awesome {
-  padding: 50px;
-  max-width: 1400px;
-  margin: auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: var(--background-color);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2d3748;
 }
 
 .bookings-header-awesome {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 3rem;
 }
 
 .bookings-header-awesome h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--text-dark);
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
 }
 
 .bookings-header-awesome p {
-  font-size: 1.2rem;
-  color: var(--text-light);
+  font-size: 1.1rem;
+  color: #4a5568;
 }
 
+/* Sections */
 .bookings-section-awesome {
-  margin-bottom: 60px;
+  margin-bottom: 3rem;
 }
 
 .bookings-section-awesome h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--text-dark);
-  padding-bottom: 15px;
-  border-bottom: 2px solid var(--border-color);
-  margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
 }
 
+/* Booking Grid */
 .bookings-grid-awesome {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
 }
 
+/* Booking Card */
 .booking-card-awesome {
-  background: var(--card-background);
-  border-radius: 15px;
-  box-shadow: 0 5px 25px rgba(0,0,0,0.07);
+  background: white;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid var(--border-color);
 }
 
 .booking-card-awesome:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
 .booking-card-awesome.past {
-  opacity: 0.75;
-}
-.booking-card-awesome.past:hover {
-  opacity: 1;
+  opacity: 0.9;
+  background-color: #f8f9fa;
 }
 
 .booking-card-img-awesome {
   width: 100%;
   height: 200px;
   object-fit: cover;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .booking-card-body-awesome {
-  padding: 25px;
+  padding: 1.5rem;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
 }
 
 .booking-card-body-awesome h3 {
-  margin: 0 0 8px 0;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-dark);
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+  color: #2c3e50;
 }
 
 .booking-date {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-light);
-  margin-bottom: 20px;
+  color: #4a5568;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
 }
 
+/* Slots List */
 .slots-list-awesome {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .slot-tag-awesome {
-  background-color: #e9ecef;
-  padding: 6px 10px 6px 14px;
+  background-color: #edf2f7;
+  padding: 0.4rem 0.8rem;
   border-radius: 20px;
   font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-dark);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.3rem;
 }
 
 .slot-cancel-btn {
-  background: #ced4da;
-  color: white;
+  background: none;
   border: none;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  color: #e53e3e;
+  font-size: 1.1rem;
   cursor: pointer;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 0 0.2rem;
   line-height: 1;
-  font-size: 14px;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .slot-cancel-btn:hover {
-  background: var(--danger-color);
+  transform: scale(1.2);
 }
 
+/* Price */
 .booking-price {
-  font-size: 1.1rem;
   font-weight: 600;
-  color: var(--primary-color);
-  padding-top: 15px;
-  border-top: 1px solid var(--border-color);
+  color: #2ecc71;
+  margin: 0.5rem 0 1rem 0;
+  font-size: 1.1rem;
 }
 
+/* Buttons */
 .btn-cancel-booking-awesome {
-  margin-top: auto; /* Pushes button to the bottom */
-  padding: 12px 20px;
-  background-color: var(--danger-color);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+  background-color: #fff;
+  color: #e53e3e;
+  border: 1px solid #e53e3e;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  margin-top: auto;
+  width: 100%;
 }
 
 .btn-cancel-booking-awesome:hover {
-  background-color: #c0392b;
-  transform: translateY(-2px);
-}
-
-.no-bookings-message {
-  font-size: 1.1rem;
-  color: var(--text-light);
-  padding: 40px;
-  text-align: center;
-  background-color: var(--card-background);
-  border-radius: 12px;
-  border: 1px dashed var(--border-color);
-}
-
-.bookings-status {
-  text-align: center;
-  padding: 100px 0;
-  font-size: 1.5rem;
-  color: var(--text-light);
-}
-.bookings-status.error {
-  color: var(--danger-color);
-}
-
-.booking-card-footer {
-  margin-top: auto;
-  padding-top: 15px;
-  border-top: 1px solid var(--border-color);
+  background-color: #fff5f5;
 }
 
 .btn-review {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--primary-color);
+  background-color: #4299e1;
   color: white;
   border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: auto;
+  width: 100%;
+}
+
+.btn-review:hover {
+  background-color: #3182ce;
+}
+
+.btn-review:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+/* No Bookings Message */
+.no-bookings-message {
+  text-align: center;
+  padding: 2rem;
+  color: #718096;
+  font-size: 1.1rem;
+  background-color: #f8f9fa;
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
+}
+
+/* Loading and Error States */
+.bookings-status {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+.bookings-status.error {
+  color: #e53e3e;
+}
+
+/* SweetAlert Customization */
+.rating-interactive {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  gap: 0.3rem;
+}
+
+.rating-interactive .star {
+  color: #e2e8f0;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.btn-review:hover:not(:disabled) {
-  background-color: #357ABD;
-  transform: translateY(-2px);
+.rating-interactive .star.hovered {
+  color: #f6e05e;
 }
 
-.btn-review:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-/* --- Improved Styles for Interactive Stars --- */
-.rating-interactive {
-  display: flex;
-  flex-direction: row-reverse; /* This makes the hover effect work correctly */
-  justify-content: center;
-  margin-bottom: 20px;
-  gap: 5px;
-}
-
-.rating-interactive .star {
-  font-size: 2.5rem;
-  color: #ddd; /* Default empty star color */
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-/* This class will be toggled by JS for both hover and final selection */
-.rating-interactive .star.hovered,
 .rating-interactive .star.selected {
-  color: #FFD700; /* Gold color for filled stars */
+  color: #f6e05e;
+}
+
+.swal2-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  resize: vertical;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bookings-grid-awesome {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-card-awesome {
+    flex-direction: column;
+  }
+  
+  .booking-card-img-awesome {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bookings-header-awesome h1 {
+    font-size: 2rem;
+  }
+  
+  .bookings-section-awesome h2 {
+    font-size: 1.5rem;
+  }
+  
+  .slot-tag-awesome {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
 }

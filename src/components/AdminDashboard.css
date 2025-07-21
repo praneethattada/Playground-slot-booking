@@ -1,107 +1,138 @@
-/* --- Awesome Admin Dashboard Styles --- */
+/* AdminDashboard.css */
 
-/* Define color variables for easy theme changes */
-:root {
-  --primary-color: #4a90e2;
-  --secondary-color: #50e3c2;
-  --background-color: #f4f6f8;
-  --card-background: #ffffff;
-  --text-dark: #333d47;
-  --text-light: #7a8c99;
-  --shadow-color: rgba(74, 144, 226, 0.2);
-}
-
+/* Base Styles */
 .admin-dashboard-awesome {
-  padding: 50px;
-  background-color: var(--background-color);
-  min-height: 100vh;
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2d3748;
 }
 
+/* Dashboard Header */
 .dashboard-header-awesome {
+  margin-bottom: 3rem;
   text-align: center;
-  margin-bottom: 60px;
 }
 
 .dashboard-header-awesome h1 {
-  font-size: 3.5rem;
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
   font-weight: 700;
-  color: var(--text-dark);
-  margin-bottom: 10px;
 }
 
 .dashboard-header-awesome p {
-  font-size: 1.25rem;
-  color: var(--text-light);
+  font-size: 1.1rem;
+  color: #4a5568;
 }
 
+/* Dashboard Grid */
 .dashboard-grid-awesome {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
 }
 
+/* Dashboard Cards */
 .dashboard-card-awesome {
-  background: var(--card-background);
-  border-radius: 15px;
-  padding: 35px;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  align-items: flex-start;
-  gap: 25px;
-  border: 1px solid #eef2f7;
-  position: relative;
-  overflow: hidden;
+  border: 1px solid #e2e8f0;
 }
 
 .dashboard-card-awesome:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 15px 30px var(--shadow-color);
-}
-
-/* Stylish gradient effect on hover */
-.dashboard-card-awesome::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.dashboard-card-awesome:hover::before {
-  opacity: 1;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  border-color: #c3dafe;
 }
 
 .card-icon-awesome {
   font-size: 3rem;
-  line-height: 1;
-  padding: 15px;
-  border-radius: 12px;
-  background-color: var(--background-color);
+  padding: 1.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, #f7fafc, #ebf8ff);
+  border-bottom: 1px solid #e2e8f0;
 }
-.icon-cities { color: #4a90e2; }
-.icon-analytics { color: #50e3c2; }
-.icon-users { color: #f5a623; }
+
+.icon-cities {
+  background: linear-gradient(135deg, #ebf8ff, #bee3f8);
+  color: #3182ce;
+}
+
+.icon-analytics {
+  background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+  color: #38a169;
+}
+
+.icon-users {
+  background: linear-gradient(135deg, #fff5f5, #fed7d7);
+  color: #e53e3e;
+}
+
+.icon-manual {
+  background: linear-gradient(135deg, #faf5ff, #e9d8fd);
+  color: #805ad5;
+}
+
+.icon-approval {
+  background: linear-gradient(135deg, #fffaf0, #feebc8);
+  color: #dd6b20;
+}
+
+.card-body-awesome {
+  padding: 1.5rem;
+  flex-grow: 1;
+}
 
 .card-body-awesome h3 {
-  margin: 0 0 10px 0;
-  font-size: 1.6rem;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  color: #2c3e50;
   font-weight: 600;
-  color: var(--text-dark);
 }
 
 .card-body-awesome p {
   margin: 0;
-  font-size: 1rem;
-  color: var(--text-light);
-  line-height: 1.6;
+  color: #718096;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-grid-awesome {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+  
+  .admin-dashboard-awesome {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-grid-awesome {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard-header-awesome h1 {
+    font-size: 2rem;
+  }
+  
+  .card-icon-awesome {
+    font-size: 2.5rem;
+    padding: 1rem;
+  }
+  
+  .card-body-awesome {
+    padding: 1rem;
+  }
 }

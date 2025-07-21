@@ -1,58 +1,109 @@
+/* adminedit.css */
+
+:root {
+  --primary: #4a6bff;
+  --primary-light: #6a8cff;
+  --primary-dark: #3a5a8a;
+  --secondary: #ff7e5f;
+  --light: #f8f9fa;
+  --dark: #2d3748;
+  --gray: #718096;
+  --light-gray: #e2e8f0;
+  --success: #48bb78;
+  --error: #f56565;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Base Styles */
 .admin-edit-container {
   display: flex;
   justify-content: center;
-  padding: 40px;
-  background-color: #f4f7f6;
-  min-height: 100vh;
+  align-items: center;
+  min-height: 80vh;
+  padding: 2rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--dark);
 }
 
 .edit-form-wrapper {
-  background: #fff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 2.5rem;
+  transition: var(--transition);
+}
+
+.edit-form-wrapper:hover {
+  box-shadow: var(--box-shadow-hover);
 }
 
 .form-title {
+  font-size: 1.8rem;
+  color: var(--dark);
+  margin-bottom: 2rem;
   text-align: center;
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 30px;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 1rem;
 }
 
+.form-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+/* Form Elements */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #555;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--gray);
 }
 
 .form-input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #f8f9fa;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--light-gray);
+  border-radius: var(--border-radius);
   font-size: 1rem;
+  background-color: var(--light);
+  transition: var(--transition);
 }
 
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+}
+
+/* Slots Section */
 .slots-section {
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background-color: var(--light);
+  border-radius: var(--border-radius);
 }
 
 .slots-section h4 {
+  margin-top: 0;
+  color: var(--dark);
   font-size: 1.2rem;
-  color: #333;
-  margin-bottom: 15px;
 }
 
 .booked-slots-list {
@@ -60,77 +111,171 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 0.5rem;
+  margin: 1rem 0;
 }
 
 .booked-slots-list li {
-  background-color: #e9ecef;
-  padding: 8px 15px;
+  background-color: #e6f7ff;
+  padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
+  color: var(--primary-dark);
 }
 
+/* Available Slots */
 .available-slots {
-  margin-top: 20px;
-  background: #fafafa;
-  padding: 20px;
-  border-radius: 8px;
+  margin-top: 1.5rem;
+}
+
+.MuiFormControlLabel-root {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.MuiFormControlLabel-root:hover {
+  background-color: rgba(74, 107, 255, 0.05);
+}
+
+.MuiCheckbox-root {
+  color: var(--primary) !important;
+}
+
+.Mui-checked {
+  color: var(--primary) !important;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  font-size: 1rem;
+}
+
+.btn-find-slots {
+  background-color: var(--primary);
+  color: white;
+  margin: 1rem 0;
+}
+
+.btn-find-slots:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(74, 107, 255, 0.3);
+}
+
+.btn-find-slots:disabled {
+  background-color: var(--light-gray);
+  color: var(--gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .form-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.btn {
-  padding: 12px 25px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s ease-in-out;
-}
-
-.btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.btn-find-slots {
-  background-color: #007bff;
-  color: white;
-}
-.btn-find-slots:hover:not(:disabled) {
-  background-color: #0056b3;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 .btn-update {
-  background-color: #28a745;
+  background-color: var(--success);
   color: white;
+  flex: 1;
 }
-.btn-update:hover:not(:disabled) {
-  background-color: #218838;
+
+.btn-update:hover {
+  background-color: #38a169;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+}
+
+.btn-update:disabled {
+  background-color: var(--light-gray);
+  color: var(--gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-cancel {
-  background-color: #6c757d;
-  color: white;
-}
-.btn-cancel:hover:not(:disabled) {
-  background-color: #5a6268;
+  background-color: white;
+  color: var(--error);
+  border: 1px solid var(--error);
+  flex: 1;
 }
 
-.loading-container, .error-container {
+.btn-cancel:hover {
+  background-color: #fff5f5;
+  transform: translateY(-2px);
+}
+
+.btn-back {
+  background-color: var(--primary);
+  color: white;
+  margin-top: 1rem;
+}
+
+.btn-back:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Loading and Error States */
+.loading-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
+  justify-content: center;
+  height: 50vh;
+  color: var(--primary);
+}
+
+.error-container {
   text-align: center;
+  padding: 2rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-container h3 {
+  color: var(--error);
+  margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .edit-form-wrapper {
+    padding: 1.5rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .btn-update,
+  .btn-cancel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-edit-container {
+    padding: 1rem;
+  }
+  
+  .form-title {
+    font-size: 1.5rem;
+  }
+  
+  .slots-section {
+    padding: 1rem;
+  }
 }

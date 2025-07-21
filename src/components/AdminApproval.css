@@ -1,101 +1,164 @@
+/* AdminApproval.css */
+
+/* Base Styles */
 .admin-approval-container {
-  padding: 40px;
-  max-width: 1100px;
-  margin: auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: #f8f9fa;
-  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2d3748;
 }
 
+/* Header Styles */
 .approval-header {
+  margin-bottom: 2.5rem;
   text-align: center;
-  margin-bottom: 40px;
 }
 
 .approval-header h1 {
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
 }
 
 .approval-header p {
   font-size: 1.1rem;
-  color: #6c757d;
+  color: #4a5568;
 }
 
+/* Status Messages */
+.approval-status {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+.no-requests {
+  text-align: center;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #718096;
+}
+
+/* Table Styles */
 .table-wrapper {
-  background: #fff;
+  overflow-x: auto;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  background: white;
+  border: 1px solid #e2e8f0;
 }
 
 .approval-table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.approval-table th, .approval-table td {
-  padding: 18px 20px;
-  text-align: left;
-  border-bottom: 1px solid #e9ecef;
+  font-size: 0.95rem;
 }
 
 .approval-table thead {
-  background-color: #f1f3f5;
+  background: linear-gradient(135deg, #f7fafc, #ebf8ff);
+  border-bottom: 2px solid #e2e8f0;
 }
 
 .approval-table th {
-  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: left;
   font-weight: 600;
-  color: #495057;
-  text-transform: uppercase;
+  color: #4a5568;
 }
 
-.approval-table tbody tr:hover {
+.approval-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+.approval-table tr:last-child td {
+  border-bottom: none;
+}
+
+.approval-table tr:hover {
   background-color: #f8f9fa;
 }
 
+/* Action Buttons */
 .action-buttons {
   display: flex;
-  gap: 10px;
+  gap: 0.8rem;
 }
 
 .btn-approve, .btn-reject {
-  padding: 8px 15px;
-  border: none;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
-  color: white;
+  font-weight: 500;
   cursor: pointer;
-  font-weight: 600;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.btn-approve:hover, .btn-reject:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 0.9rem;
 }
 
 .btn-approve {
-  background-color: #28a745;
+  background-color: #c6f6d5;
+  color: #22543d;
+}
+
+.btn-approve:hover {
+  background-color: #9ae6b4;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(154, 230, 180, 0.3);
 }
 
 .btn-reject {
-  background-color: #dc3545;
+  background-color: #fed7d7;
+  color: #742a2a;
 }
 
-.no-requests {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #666;
-  padding: 60px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+.btn-reject:hover {
+  background-color: #feb2b2;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(254, 178, 178, 0.3);
 }
 
-.approval-status {
-  text-align: center;
-  padding: 100px 0;
-  font-size: 1.5rem;
-  color: #6c757d;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-approval-container {
+    padding: 1.5rem;
+  }
+  
+  .approval-table th,
+  .approval-table td {
+    padding: 0.8rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-approval-container {
+    padding: 1rem;
+  }
+  
+  .approval-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .approval-table {
+    font-size: 0.85rem;
+  }
+  
+  .approval-table th,
+  .approval-table td {
+    padding: 0.6rem;
+  }
+  
+  .btn-approve,
+  .btn-reject {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
 }

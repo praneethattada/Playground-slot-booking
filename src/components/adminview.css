@@ -1,210 +1,273 @@
-/* General styles for the admin view container */
-.admin-view-container {
-  padding: 40px;
-  background-color: #f4f7f6;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 100vh;
+/* adminview.css */
+
+:root {
+  --primary: #4a6bff;
+  --primary-light: #6a8cff;
+  --primary-dark: #3a5a8a;
+  --secondary: #ff7e5f;
+  --light: #f8f9fa;
+  --dark: #2d3748;
+  --gray: #718096;
+  --light-gray: #e2e8f0;
+  --success: #48bb78;
+  --error: #f56565;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+/* Base Styles */
+.admin-view-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styles */
 .admin-header {
-  text-align: center;
-  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .admin-view-title {
-  text-align: center;
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 40px;
+  font-size: 2rem;
+  color: var(--dark);
+  margin: 0;
 }
 
-/* Status messages for loading and errors */
+.btn-add-city {
+  background-color: var(--primary);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-add-city:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow-hover);
+}
+
+/* Status Messages */
 .admin-view-status {
   text-align: center;
-  font-size: 1.5rem;
-  padding-top: 100px;
-  color: #555;
-}
-.admin-view-status.error {
-  color: #d9534f;
+  padding: 2rem;
+  font-size: 1.2rem;
 }
 
-/* --- UPDATED: Grid layout for cities --- */
+.admin-view-status.error {
+  color: var(--error);
+}
+
+/* Cities Grid */
 .cities-grid {
   display: grid;
-  /* This forces the grid to have exactly two columns of equal width */
-  grid-template-columns: repeat(2, 1fr);
-  gap: 30px;
-  margin-bottom: 60px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
-/* --- NEW: Responsive rule for smaller screens --- */
-@media (max-width: 768px) {
-  .cities-grid {
-    /* Switch to a single column on mobile */
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Individual city card */
 .city-card-admin {
   position: relative;
-  border-radius: 12px;
+  border-radius: var(--border-radius);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  height: 250px;
+  transition: var(--transition);
+  box-shadow: var(--box-shadow);
+  aspect-ratio: 4/3;
 }
 
 .city-card-admin:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow-hover);
 }
 
 .city-image-admin {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.5s ease;
 }
 
 .city-card-admin:hover .city-image-admin {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .city-overlay-admin {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-  padding: 20px;
-  color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1.5rem;
 }
 
-/* Playgrounds section */
+.city-overlay-admin span {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Playgrounds Section */
 .playgrounds-section-admin {
-  padding-top: 40px;
-  border-top: 1px solid #ddd;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--light-gray);
 }
 
 .playgrounds-title {
-  text-align: center;
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 40px;
+  font-size: 1.8rem;
+  color: var(--dark);
+  margin-bottom: 1.5rem;
 }
 
 .playgrounds-list {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  max-width: 900px;
-  margin: 0 auto;
+  gap: 1.5rem;
 }
 
-/* Individual playground card */
 .playground-card-admin {
   display: flex;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: var(--border-radius);
   overflow: hidden;
-  transition: box-shadow 0.3s ease;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
 }
 
 .playground-card-admin:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: var(--box-shadow-hover);
 }
 
 .playground-image-admin {
-  width: 300px;
-  height: 200px;
+  width: 250px;
+  height: 180px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .playground-info-admin {
-  padding: 20px;
+  padding: 1.5rem;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 1;
 }
 
 .playground-info-admin h3 {
-  margin: 0 0 15px 0;
-  font-size: 1.5rem;
-  color: #333;
+  margin: 0 0 1rem 0;
+  color: var(--dark);
+  font-size: 1.3rem;
 }
 
 .playground-actions {
   display: flex;
-  gap: 15px;
+  gap: 1rem;
+  margin-top: auto;
+  flex-wrap: wrap;
 }
 
-/* Admin action buttons */
 .btn-admin {
-  padding: 10px 20px;
-  border: none;
+  padding: 0.6rem 1.2rem;
   border-radius: 8px;
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
+  transition: var(--transition);
   text-decoration: none;
-  text-align: center;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.btn-admin:hover {
-  transform: translateY(-2px);
+  font-size: 0.9rem;
+  border: none;
 }
 
 .btn-admin.view {
-  background-color: #5bc0de;
+  background-color: var(--primary);
+  color: white;
 }
+
 .btn-admin.view:hover {
-  background-color: #31b0d5;
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(74, 107, 255, 0.3);
 }
 
 .btn-admin.add {
-  background-color: #5cb85c;
-}
-.btn-admin.add:hover {
-  background-color: #449d44;
-}
-
-.btn-add-city {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 12px 25px;
-  background-color: #2ecc71; /* A nice green color */
+  background-color: var(--success);
   color: white;
-  text-decoration: none;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
 }
 
-.btn-add-city:hover {
-  background-color: #27ae60;
+.btn-admin.add:hover {
+  background-color: #38a169;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
 }
-
-/* Add these styles to your adminview.css file */
 
 .btn-admin.delete {
-  background-color: #d9534f;
-}
-.btn-admin.delete:hover {
-  background-color: #c9302c;
+  background-color: var(--error);
+  color: white;
 }
 
-/* Style for the disabled delete button */
+.btn-admin.delete:hover:not(:disabled) {
+  background-color: #e53e3e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
+}
+
 .btn-admin.delete:disabled {
-  background-color: #ccc;
+  background-color: var(--light-gray);
+  color: var(--gray);
   cursor: not-allowed;
-  transform: none;
+  opacity: 0.7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .playground-card-admin {
+    flex-direction: column;
+  }
+  
+  .playground-image-admin {
+    width: 100%;
+    height: 200px;
+  }
+  
+  .cities-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-view-container {
+    padding: 1rem;
+  }
+  
+  .admin-view-title {
+    font-size: 1.8rem;
+  }
+  
+  .playground-actions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .btn-admin {
+    width: 100%;
+    text-align: center;
+  }
 }

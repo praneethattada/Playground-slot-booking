@@ -1,85 +1,155 @@
+/* AdminUserManagement.css */
+
+/* Base Styles */
 .user-management-container {
-  padding: 40px;
   max-width: 1200px;
-  margin: auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2d3748;
 }
 
 .user-management-container h1 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-weight: 700;
   text-align: center;
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 40px;
 }
 
+/* Status Messages */
+.user-management-status {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+.user-management-status.error {
+  color: #e53e3e;
+}
+
+/* Table Styles */
 .table-wrapper {
   overflow-x: auto;
-  background: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  background: white;
+  border: 1px solid #e2e8f0;
 }
 
 .users-table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.users-table th, .users-table td {
-  padding: 18px 20px;
-  text-align: left;
-  border-bottom: 1px solid #e9ecef;
+  font-size: 0.95rem;
 }
 
 .users-table thead {
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #f7fafc, #ebf8ff);
+  border-bottom: 2px solid #e2e8f0;
 }
 
 .users-table th {
-  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: left;
   font-weight: 600;
-  color: #6c757d;
-  text-transform: uppercase;
+  color: #4a5568;
 }
 
-.users-table tbody tr:hover {
-  background-color: #f1f3f5;
+.users-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
 }
 
+.users-table tr:last-child td {
+  border-bottom: none;
+}
+
+.users-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Status Badges */
 .status-badge {
-  padding: 6px 12px;
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
   border-radius: 20px;
-  color: white;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 500;
   text-transform: capitalize;
 }
 
-.status-active { background-color: #28a745; }
-.status-blocked { background-color: #dc3545; }
+.status-active {
+  background-color: #c6f6d5;
+  color: #22543d;
+}
 
+.status-blocked {
+  background-color: #fed7d7;
+  color: #742a2a;
+}
+
+/* Action Buttons */
 .btn-status {
-  padding: 8px 15px;
-  border: none;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
-  color: white;
+  font-weight: 500;
   cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 0.9rem;
 }
 
-.btn-block { background-color: #dc3545; }
-.btn-block:hover { background-color: #c82333; }
-
-.btn-unblock { background-color: #28a745; }
-.btn-unblock:hover { background-color: #218838; }
-
-.user-management-status {
-  text-align: center;
-  padding: 100px 20px;
-  font-size: 1.5rem;
-  color: #6c757d;
+.btn-block {
+  background-color: #fed7d7;
+  color: #c53030;
 }
 
-.user-management-status.error {
-  color: #dc3545;
+.btn-block:hover {
+  background-color: #feb2b2;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(254, 178, 178, 0.3);
+}
+
+.btn-unblock {
+  background-color: #bee3f8;
+  color: #2b6cb0;
+}
+
+.btn-unblock:hover {
+  background-color: #90cdf4;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(144, 205, 244, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-management-container {
+    padding: 1.5rem;
+  }
+  
+  .users-table th,
+  .users-table td {
+    padding: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-management-container h1 {
+    font-size: 1.8rem;
+  }
+  
+  .users-table {
+    font-size: 0.85rem;
+  }
+  
+  .users-table th,
+  .users-table td {
+    padding: 0.6rem;
+  }
+  
+  .btn-status {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
 }

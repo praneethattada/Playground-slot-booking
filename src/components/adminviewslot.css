@@ -1,149 +1,245 @@
-.admin-view-slots-container {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+/* adminviewslot.css */
+
+:root {
+  --primary: #4a6bff;
+  --primary-light: #6a8cff;
+  --primary-dark: #3a5a8a;
+  --secondary: #ff7e5f;
+  --light: #f8f9fa;
+  --dark: #2d3748;
+  --gray: #718096;
+  --light-gray: #e2e8f0;
+  --success: #48bb78;
+  --error: #f56565;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.header-info {
+/* Base Styles */
+.admin-view-slots-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Error Page */
+.error-page {
   text-align: center;
-  margin-bottom: 30px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 30px;
+  padding: 2rem;
+  color: var(--dark);
+}
+
+.error-page h2 {
+  color: var(--error);
+  margin-bottom: 1rem;
+}
+
+.btn-back {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.8rem 1.5rem;
+  background-color: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.btn-back:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* Header Section */
+.header-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .header-info h2 {
-  font-size: 2.5rem;
-  color: #333;
+  font-size: 1.8rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
 }
 
 .header-image {
   width: 100%;
-  max-height: 400px;
+  max-width: 600px;
+  height: 300px;
   object-fit: cover;
-  border-radius: 8px;
-  margin-top: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
+/* Date Picker */
 .date-picker-wrapper {
+  margin: 2rem 0;
   display: flex;
   justify-content: center;
-  margin-bottom: 40px;
 }
 
+/* Bookings Table */
 .bookings-table-container {
   overflow-x: auto;
+  margin: 2rem 0;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  background: white;
+  border: 1px solid var(--light-gray);
 }
 
 .bookings-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.95rem;
 }
 
-.bookings-table th, .bookings-table td {
-  padding: 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+.bookings-table thead {
+  background: linear-gradient(135deg, #f7fafc, #ebf8ff);
+  border-bottom: 2px solid var(--light-gray);
 }
 
 .bookings-table th {
-  background-color: #f8f9fa;
-  font-size: 1rem;
-  color: #555;
-  text-transform: uppercase;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--gray);
 }
 
 .bookings-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--light-gray);
   vertical-align: middle;
 }
 
+.bookings-table tr:last-child td {
+  border-bottom: none;
+}
+
+.bookings-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Slots List Cell */
 .slots-list-cell {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
 .slot-item {
   display: flex;
   align-items: center;
-  background-color: #e9ecef;
-  padding: 5px 10px;
-  border-radius: 15px;
+  background-color: var(--light);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
   font-size: 0.9rem;
+  color: var(--dark);
 }
 
 .btn-delete-slot {
-  margin-left: 8px;
-  background: #dc3545;
-  color: white;
+  background: none;
   border: none;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  color: var(--error);
+  font-size: 1.2rem;
   cursor: pointer;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 0 0.3rem;
   line-height: 1;
-  transition: background-color 0.2s;
-}
-.btn-delete-slot:hover {
-  background: #c82333;
+  transition: var(--transition);
 }
 
+.btn-delete-slot:hover {
+  transform: scale(1.2);
+}
+
+/* Action Buttons */
 .action-buttons {
   display: flex;
-  gap: 10px;
+  gap: 0.8rem;
 }
 
-.btn-delete-record, .btn-edit-record {
-  color: white;
-  border: none;
-  padding: 10px 15px;
+.btn-edit-record,
+.btn-delete-record {
+  padding: 0.5rem 1rem;
   border-radius: 6px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
-  text-decoration: none;
+  transition: var(--transition);
+  border: none;
   font-size: 0.9rem;
-  text-align: center;
+}
+
+.btn-edit-record {
+  background-color: var(--primary);
+  color: white;
+  text-decoration: none;
+}
+
+.btn-edit-record:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(74, 107, 255, 0.3);
 }
 
 .btn-delete-record {
-  background-color: #c82333;
-}
-.btn-delete-record:hover {
-  background-color: #a71d2a;
-}
-.btn-edit-record {
-  background-color: #ffc107;
-  color: #212529;
-}
-.btn-edit-record:hover {
-  background-color: #e0a800;
+  background-color: var(--error);
+  color: white;
 }
 
+.btn-delete-record:hover {
+  background-color: #e53e3e;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(245, 101, 101, 0.3);
+}
+
+/* No Bookings Message */
 .no-bookings-message {
   text-align: center;
-  padding: 50px;
-  font-size: 1.2rem;
-  color: #777;
+  padding: 2rem;
+  background-color: var(--light);
+  border-radius: var(--border-radius);
+  color: var(--gray);
 }
 
-/* Error page styles */
-.error-page {
-  text-align: center;
-  padding: 50px;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-image {
+    height: 250px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .slot-item {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
 }
-.btn-back {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 12px 25px;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
+
+@media (max-width: 480px) {
+  .admin-view-slots-container {
+    padding: 1rem;
+  }
+  
+  .header-info h2 {
+    font-size: 1.5rem;
+  }
+  
+  .header-image {
+    height: 200px;
+  }
+  
+  .bookings-table th,
+  .bookings-table td {
+    padding: 0.8rem;
+  }
 }

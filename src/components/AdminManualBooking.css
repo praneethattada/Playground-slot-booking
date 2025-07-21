@@ -1,58 +1,151 @@
+/* AdminManualBooking.css */
+
+/* Base Styles */
 .manual-booking-container {
-  padding: 40px;
-  background-color: #f4f6f8;
-  display: flex;
-  justify-content: center;
-  font-family: 'Segoe UI', sans-serif;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2d3748;
 }
+
 .manual-booking-form {
-  width: 100%;
-  max-width: 700px;
   background: white;
-  padding: 40px;
   border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
+
 .manual-booking-form h1 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 2rem;
   text-align: center;
-  margin-bottom: 30px;
+  font-weight: 700;
 }
+
+/* Form Steps */
 .form-step {
-  margin-bottom: 30px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #eee;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
 }
+
 .form-step h2 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: #333;
+  font-size: 1.3rem;
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
 }
-.manual-booking-form select, .manual-booking-form .MuiTextField-root {
+
+/* Form Elements */
+select {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   font-size: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
 }
+
+select:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+/* Date Picker Customization */
+.MuiTextField-root {
+  width: 100%;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Time Slots Selection */
 .time-slots-selection {
-  margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
-.time-slots-selection div {
+
+.time-slots-selection > div {
   display: flex;
   align-items: center;
+  background: #f8f9fa;
+  padding: 0.8rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
+
+.time-slots-selection > div:hover {
+  background: #ebf8ff;
+}
+
+.time-slots-selection input[type="checkbox"] {
+  margin-right: 0.8rem;
+  width: 18px;
+  height: 18px;
+  accent-color: #4299e1;
+}
+
+.time-slots-selection label {
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+/* Submit Button */
 .btn-submit-booking {
   width: 100%;
-  padding: 15px;
-  font-size: 1.1rem;
-  font-weight: 600;
+  padding: 1rem;
+  background: linear-gradient(135deg, #4299e1, #3182ce);
   color: white;
-  background-color: #28a745;
   border: none;
   border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  box-shadow: 0 4px 6px rgba(66, 153, 225, 0.2);
+}
+
+.btn-submit-booking:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(66, 153, 225, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .manual-booking-form {
+    padding: 1.5rem;
+  }
+  
+  .form-step {
+    margin-bottom: 2rem;
+  }
+  
+  .time-slots-selection {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .manual-booking-form h1 {
+    font-size: 1.8rem;
+  }
+  
+  .form-step h2 {
+    font-size: 1.2rem;
+  }
+  
+  select {
+    padding: 0.7rem;
+  }
+  
+  .btn-submit-booking {
+    padding: 0.9rem;
+    font-size: 1rem;
+  }
 }
