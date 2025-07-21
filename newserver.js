@@ -381,7 +381,7 @@ app.post('/admin/manual-booking', authenticateToken, async (req, res) => {
     return res.status(403).json({ success: false, message: 'Forbidden' });
   }
   try {
-    const { userId, username, name, date, slots, imageUrl, price } = req.body;
+    const { userId, username, name, date, slots, imageUrl } = req.body;
 
     if (!userId || !username || !name || !date || !slots || !imageUrl) {
       return res.status(400).json({ success: false, message: 'Missing required booking information.' });
@@ -394,7 +394,7 @@ app.post('/admin/manual-booking', authenticateToken, async (req, res) => {
       date,
       slots,
       imageUrl,
-      price: price || 0,
+      
       status: 'confirmed',
       createdAt: new Date(),
       updatedAt: new Date()
