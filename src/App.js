@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import styled from 'styled-components';
 
 // Import Components
+import ProtectedRoute from './components/ProtectedRoute'; // Import the new component
 import Home from './components/Home/Home/Home';
 import NotFound from './components/NotFound/NotFound';
 import { AccountBox } from './components/Login_Signup';
@@ -18,13 +19,12 @@ import AdminAddCities from './components/AdminAddCIties';
 import AdminEdit from './components/AdminEdit';
 import AdminViewSlots from './components/AdminViewSlots';
 import AdminAddSlots from './components/AdminAddSlots';
-
-// --- NEW: Import the new and renamed admin components ---
-import AdminDashboard from './components/AdminDashboard'; // The new dashboard hub
-import AdminCityManagement from './components/AdminCityManagement'; // Renamed for clarity
+import AdminDashboard from './components/AdminDashboard';
+import AdminCityManagement from './components/AdminCityManagement';
 import AdminAnalytics from './components/AdminAnalytics';
 import AdminUserManagement from './components/AdminUserManagement';
 import AdminManualBooking from './components/AdminManualBooking';
+
 
 const AppContainer = styled.div`
   width: 100%;
@@ -48,32 +48,32 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
+        {/* --- Public Routes --- */}
         <Route path="/" element={<Home />} />
         <Route path="/Home" element={<Home />} />
-        
-        {/* User Routes */}
         <Route path="/login" element={<AppContainer><AccountBox /></AppContainer>} />
-        <Route path="/check" element={<AppCon><Check /></AppCon>} />
-        <Route path="/slotbooking/:index" element={<AppCon><SlotBooking /></AppCon>} />
-        <Route path="/bookingdetails/:idr/:index" element={<AppCon><BookingDetails /></AppCon>} />
+        <Route path="/admin" element={<AppContainer><Account1 /></AppContainer>} />
         <Route path="/forgotpassword" element={<AppCon><ForgetPassword /></AppCon>} />
 
-        {/* --- UPDATED: Admin Routes --- */}
-        <Route path="/admin" element={<AppContainer><Account1 /></AppContainer>} />
+        {/* --- Protected User Routes --- */}
+        <Route element={<ProtectedRoute authType="user" />}>
+          <Route path="/check" element={<AppCon><Check /></AppCon>} />
+          <Route path="/slotbooking/:index" element={<AppCon><SlotBooking /></AppCon>} />
+          <Route path="/bookingdetails/:idr/:index" element={<AppCon><BookingDetails /></AppCon>} />
+        </Route>
         
-        {/* Main admin dashboard hub */}
-        <Route path="/adminview" element={<AppCon><AdminDashboard /></AppCon>} />
-
-        {/* Specific admin management pages */}
-        <Route path="/admin/manage-cities" element={<AppCon><AdminCityManagement /></AppCon>} />
-        <Route path="/admin/analytics" element={<AppCon><AdminAnalytics /></AppCon>} />
-        <Route path="/admin/users" element={<AppCon><AdminUserManagement /></AppCon>} />
-        <Route path="/admin/manual-booking" element={<AppCon><AdminManualBooking /></AppCon>} />
-        
-        <Route path="/adminadd" element={<AppCon><AdminAddCities /></AppCon>} />
-        <Route path="/adminedit/:id" element={<AppCon><AdminEdit /></AppCon>} />
-        <Route path="/adminviewslots/:cityId/:groundName" element={<AppCon><AdminViewSlots /></AppCon>} />
-        <Route path="/adminaddslots/:cityId/:groundName" element={<AppCon><AdminAddSlots /></AppCon>} />
+        {/* --- Protected Admin Routes --- */}
+        <Route element={<ProtectedRoute authType="admin" />}>
+          <Route path="/adminview" element={<AppCon><AdminDashboard /></AppCon>} />
+          <Route path="/admin/manage-cities" element={<AppCon><AdminCityManagement /></AppCon>} />
+          <Route path="/admin/analytics" element={<AppCon><AdminAnalytics /></AppCon>} />
+          <Route path="/admin/users" element={<AppCon><AdminUserManagement /></AppCon>} />
+          <Route path="/admin/manual-booking" element={<AppCon><AdminManualBooking /></AppCon>} />
+          <Route path="/adminadd" element={<AppCon><AdminAddCities /></AppCon>} />
+          <Route path="/adminedit/:id" element={<AppCon><AdminEdit /></AppCon>} />
+          <Route path="/adminviewslots/:cityId/:groundName" element={<AppCon><AdminViewSlots /></AppCon>} />
+          <Route path="/adminaddslots/:cityId/:groundName" element={<AppCon><AdminAddSlots /></AppCon>} />
+        </Route>
         
         {/* Catch-all Not Found Route */}
         <Route path="*" element={<NotFound />} />

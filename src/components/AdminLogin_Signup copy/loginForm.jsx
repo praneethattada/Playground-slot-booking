@@ -77,6 +77,7 @@ export function AdminLoginForm(props) {
       // Store ADMIN token and data in localStorage
       localStorage.setItem("adminAuthToken", token);
       localStorage.setItem("admin", JSON.stringify(admin));
+      window.dispatchEvent(new Event("authChange"));
 
       // You might want to dispatch admin-specific actions here if needed
       // dispatch({ type: "ADMIN_LOGIN", payload: admin });

@@ -67,6 +67,7 @@ export function LoginForm(props) {
       // Store token in localStorage
       localStorage.setItem("authToken", token);
       localStorage.setItem("user", JSON.stringify(user));
+      window.dispatchEvent(new Event("authChange"));
 
       // Update Redux store
       dispatch({ type: "LOGIN", payload: user });
