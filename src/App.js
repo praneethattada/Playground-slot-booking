@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import styled from 'styled-components';
 
+
 // Import Components
 import ProtectedRoute from './components/ProtectedRoute'; // Import the new component
 import Home from './components/Home/Home/Home';
@@ -25,6 +26,8 @@ import AdminAnalytics from './components/AdminAnalytics';
 import AdminUserManagement from './components/AdminUserManagement';
 import AdminManualBooking from './components/AdminManualBooking';
 import AdminApproval from './components/AdminApproval';
+import MyBookings from './components/MyBookings';
+import ResetPassword from './components/ResetPassword';
 
 
 
@@ -55,13 +58,19 @@ function App() {
         <Route path="/Home" element={<Home />} />
         <Route path="/login" element={<AppContainer><AccountBox /></AppContainer>} />
         <Route path="/admin" element={<AppContainer><Account1 /></AppContainer>} />
-        <Route path="/forgotpassword" element={<AppCon><ForgetPassword /></AppCon>} />
+        <Route path="/forgot-password" element={<AppCon><ForgetPassword /></AppCon>} />
+        <Route path="/reset-password/:token" element={<AppCon><ResetPassword /></AppCon>} />
+        {/* Admin Password Reset */}
+        <Route path="/admin/forgot-password" element={<AppCon><ForgetPassword userType="admin" /></AppCon>} />
+        <Route path="/admin/reset-password/:token" element={<AppCon><ResetPassword userType="admin" /></AppCon>} />
+
 
         {/* --- Protected User Routes --- */}
         <Route element={<ProtectedRoute authType="user" />}>
           <Route path="/check" element={<AppCon><Check /></AppCon>} />
           <Route path="/slotbooking/:index" element={<AppCon><SlotBooking /></AppCon>} />
           <Route path="/bookingdetails/:idr/:index" element={<AppCon><BookingDetails /></AppCon>} />
+          <Route path="/my-bookings" element={<AppCon><MyBookings /></AppCon>} />
         </Route>
         
         {/* --- Protected Admin Routes --- */}

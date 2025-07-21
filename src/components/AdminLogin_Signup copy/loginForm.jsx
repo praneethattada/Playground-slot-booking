@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { AccountContext } from "./accountContext";
+import { Link } from 'react-router-dom';
 import {
   BoldLink,
   BoxContainer,
@@ -115,7 +116,10 @@ export function AdminLoginForm(props) {
         />
         {errors.password && <p style={{ color: "red", textAlign: "left", fontSize: "0.8rem" }}>{errors.password}</p>}
         <Marginer direction="vertical" margin={10} />
-        <MutedLink href="#">Forgot password?</MutedLink>
+        <MutedLink href="#">
+          <Link to="/admin/forgot-password" style={{ textDecoration: "none", color: "rgba(255,255,255,0.6)" }}>
+                    Forgot password?
+                  </Link></MutedLink>
         <Marginer direction="vertical" margin="1.6em" />
         <SubmitButton type="submit" disabled={isLoading}>
           {isLoading ? "Signing In..." : "Sign In"}

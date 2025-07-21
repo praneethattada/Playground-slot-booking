@@ -246,6 +246,152 @@ app.get('/users/:id', authenticateToken, validateObjectId, async (req, res) => {
   }
 });
 
+// In server.js, add these two new endpoints
+
+// --- PASSWORD RESET ENDPOINTS ---
+
+// 1. REQUEST A PASSWORD RESET
+app.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await db.collection('users').findOne({ email });
+
+    if (!user) {
+      // We send a success message even if the user doesn't exist
+      // to prevent people from checking which emails are registered.
+      return res.json({ success: true, message: 'If a user with that email exists, a password reset link has been sent.' });
+    }
+
+    // Generate a secure, random token
+    const resetToken = require('crypto').randomBytes(32).toString('hex');
+    // Set an expiry date for the token (e.g., 1 hour from now)
+    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
+
+    // Save the token and expiry date to the user's document
+    await db.collection('users').updateOne(
+      { _id: user._id },
+      { $set: { resetToken, resetTokenExpiry } }
+    );
+
+    // In a real application, you would email this link to the user.
+    // For this project, we will send it back in the response for simulation.
+    const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+    console.log(`Password Reset Link (for simulation): ${resetLink}`);
+
+    res.json({ success: true, message: 'If a user with that email exists, a password reset link has been sent.' });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+
+// 2. RESET THE PASSWORD
+app.post('/reset-password/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    // Find the user with a valid (non-expired) token
+    const user = await db.collection('users').findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: new Date() } // Check if the token is not expired
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Password reset token is invalid or has expired.' });
+    }
+
+    // Hash the new password
+    const hashedPassword = await require('bcryptjs').hash(password, 10);
+
+    // Update the user's password and remove the token so it can't be used again
+    await db.collection('users').updateOne(
+      { _id: user._id },
+      { 
+        $set: { password: hashedPassword },
+        $unset: { resetToken: "", resetTokenExpiry: "" }
+      }
+    );
+
+    res.json({ success: true, message: 'Password has been reset successfully. Please log in.' });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+// In server.js
+
+// --- NEW: ADMIN PASSWORD RESET ENDPOINTS ---
+
+// 1. ADMIN REQUESTS A PASSWORD RESET
+app.post('/admin/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    // Find the admin in the 'admins' collection
+    const admin = await db.collection('admins').findOne({ email });
+
+    if (!admin) {
+      return res.json({ success: true, message: 'If an admin with that email exists, a password reset link has been sent.' });
+    }
+
+    const resetToken = require('crypto').randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
+
+    // Save the token to the admin's document
+    await db.collection('admins').updateOne(
+      { _id: admin._id },
+      { $set: { resetToken, resetTokenExpiry } }
+    );
+
+    // For simulation, we log the link. In production, you would email this.
+    // Note the URL is different for the admin reset page.
+    const resetLink = `http://localhost:3000/admin/reset-password/${resetToken}`;
+    console.log(`ADMIN Password Reset Link (for simulation): ${resetLink}`);
+
+    res.json({ success: true, message: 'If an admin with that email exists, a password reset link has been sent.' });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
+
+// 2. ADMIN RESETS THE PASSWORD
+app.post('/admin/reset-password/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    // Find the admin with a valid token in the 'admins' collection
+    const admin = await db.collection('admins').findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: new Date() }
+    });
+
+    if (!admin) {
+      return res.status(400).json({ success: false, message: 'Password reset token is invalid or has expired.' });
+    }
+
+    const hashedPassword = await require('bcryptjs').hash(password, 10);
+
+    // Update the admin's password and remove the token
+    await db.collection('admins').updateOne(
+      { _id: admin._id },
+      { 
+        $set: { password: hashedPassword },
+        $unset: { resetToken: "", resetTokenExpiry: "" }
+      }
+    );
+
+    res.json({ success: true, message: 'Password has been reset successfully. Please log in.' });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});
+
 // ========== ADMIN ENDPOINTS ========== //
 
 // In server.js
@@ -590,6 +736,143 @@ app.post('/postslots', authenticateToken, async (req, res) => {
     });
   }
 });
+// In server.js
+
+// --- NEW: GET BOOKINGS FOR A SPECIFIC USER (User Protected) ---
+app.get('/my-bookings', authenticateToken, async (req, res) => {
+  // The authenticateToken middleware gives us req.user
+  if (!req.user || !req.user.userId) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+
+  try {
+    const userId = req.user.userId;
+    
+    // Find all bookings in the 'postslots' collection that match the logged-in user's ID
+    const userBookings = await db.collection('postslots').find({ userId: userId }).toArray();
+    
+    res.json({ success: true, data: userBookings });
+
+  } catch (err) {
+    console.error("Failed to fetch user bookings:", err);
+    res.status(500).json({ success: false, message: 'Server error while fetching bookings.' });
+  }
+});
+// --- NEW: CANCEL A BOOKING (User Protected) ---
+app.delete('/my-bookings/:bookingId', authenticateToken, async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const userId = req.user.userId;
+
+    // Step 1: Find the booking to ensure it belongs to the user and to get its details
+    const booking = await db.collection('postslots').findOne({
+      _id: new ObjectId(bookingId),
+      userId: userId
+    });
+
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found or you do not have permission to cancel it.' });
+    }
+
+    // Step 2: Delete the user's booking
+    await db.collection('postslots').deleteOne({ _id: new ObjectId(bookingId) });
+
+    // Step 3: Add the slots back to the master availability list
+    const availabilityDoc = await db.collection('slots').findOne({
+      name: booking.name,
+      date: booking.date
+    });
+
+    if (availabilityDoc) {
+      // If a document for that day exists, add the slots back and sort them
+      const updatedSlots = [...new Set([...availabilityDoc.slots, ...booking.slots])].sort();
+      await db.collection('slots').updateOne(
+        { _id: availabilityDoc._id },
+        { $set: { slots: updatedSlots } }
+      );
+    } else {
+      // If no availability document exists for that day, create one
+      await db.collection('slots').insertOne({
+        name: booking.name,
+        date: booking.date,
+        slots: booking.slots.sort()
+      });
+    }
+
+    res.json({ success: true, message: 'Booking cancelled successfully!' });
+
+  } catch (err) {
+    console.error("Failed to cancel booking:", err);
+    res.status(500).json({ success: false, message: 'Server error while cancelling booking.' });
+  }
+});
+
+// In server.js, add this new endpoint
+
+// --- NEW: CANCEL A SINGLE SLOT FROM A BOOKING (User Protected) ---
+app.delete('/my-bookings/:bookingId/slots', authenticateToken, async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { slotTime } = req.body; // The time slot to remove is sent in the body
+    const userId = req.user.userId;
+
+    if (!slotTime) {
+      return res.status(400).json({ success: false, message: 'Slot time is required.' });
+    }
+
+    // Step 1: Find the booking to ensure it belongs to the user
+    const booking = await db.collection('postslots').findOne({
+      _id: new ObjectId(bookingId),
+      userId: userId
+    });
+
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found or you do not have permission to modify it.' });
+    }
+
+    // Step 2: Remove the specific slot from the booking's slots array
+    const updatedSlots = booking.slots.filter(s => s !== slotTime);
+
+    // If all slots are removed, delete the entire booking. Otherwise, update it.
+    if (updatedSlots.length === 0) {
+      await db.collection('postslots').deleteOne({ _id: new ObjectId(bookingId) });
+    } else {
+      // TODO: Recalculate price if you have dynamic pricing implemented
+      await db.collection('postslots').updateOne(
+        { _id: new ObjectId(bookingId) },
+        { $set: { slots: updatedSlots } }
+      );
+    }
+
+    // Step 3: Add the single slot back to the master availability list
+    const availabilityDoc = await db.collection('slots').findOne({
+      name: booking.name,
+      date: booking.date
+    });
+
+    if (availabilityDoc) {
+      const newAvailableSlots = [...new Set([...availabilityDoc.slots, slotTime])].sort();
+      await db.collection('slots').updateOne(
+        { _id: availabilityDoc._id },
+        { $set: { slots: newAvailableSlots } }
+      );
+    } else {
+      await db.collection('slots').insertOne({
+        name: booking.name,
+        date: booking.date,
+        slots: [slotTime]
+      });
+    }
+
+    res.json({ success: true, message: 'Slot cancelled successfully!' });
+
+  } catch (err) {
+    console.error("Failed to cancel slot:", err);
+    res.status(500).json({ success: false, message: 'Server error while cancelling slot.' });
+  }
+});
+
+
 
 // Get all bookings (admin protected)
 app.get('/postslots', authenticateToken, async (req, res) => {
