@@ -20,18 +20,23 @@ import AdminViewCities from './components/AdminViewCities';
 import AdminViewSlots from './components/AdminViewSlots';
 import AdminAddSlots from './components/AdminAddSlots';
 
+// --- STYLES FIX ---
+// Added 'padding-top' to push content below the navbar.
 const AppContainer = styled.div`
   width: 100%;
-  min-height: 90vh; /* Use min-height to be more flexible */
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: linear-gradient(to top, #ffffff 0%, #454545 100%);
+  padding-top: 80px; /* Adjust this value to match your navbar's height */
 `;
 
 const AppCon = styled.div`
   background: linear-gradient(to top, #ffffff 0%, #454545 100%);
+  padding-top: 80px; /* Adjust this value to match your navbar's height */
+  min-height: 90vh; /* Added to ensure it takes up screen height */
 `;
 
 function App() {

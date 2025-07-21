@@ -691,6 +691,87 @@ app.get('/cities', async (req, res) => {
     });
   }
 });
+// In server.js, add these two new routes
+
+// ADD A NEW CITY (Admin Protected)
+app.post('/cities', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const { city, img, playground } = req.body;
+    if (!city || !img || !playground) {
+      return res.status(400).json({ success: false, message: 'All fields are required.' });
+    }
+    const existingCity = await db.collection('cities').findOne({ city });
+    if (existingCity) {
+      return res.status(400).json({ success: false, message: 'This city already exists.' });
+    }
+    const newCity = { city, img, playground, createdAt: new Date() };
+    const result = await db.collection('cities').insertOne(newCity);
+    res.status(201).json({ success: true, message: 'City added successfully!', cityId: result.insertedId });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to add city' });
+  }
+});
+
+// DELETE A CITY (Admin Protected)
+// In server.js, add this new endpoint
+
+// DELETE A PLAYGROUND from a specific city (Admin Protected)
+app.delete('/cities/:cityId/playgrounds/:playgroundName', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const { cityId, playgroundName } = req.params;
+
+    // Step 1: Check if any bookings exist for this playground
+    const existingBooking = await db.collection('postslots').findOne({ name: playgroundName });
+    if (existingBooking) {
+      return res.status(400).json({ success: false, message: 'Cannot delete playground with active bookings. Please delete the bookings first.' });
+    }
+    
+    // Step 2: Find the city to get the image of the playground to remove
+    const city = await db.collection('cities').findOne({ _id: new ObjectId(cityId) });
+    if (!city) {
+      return res.status(404).json({ success: false, message: 'City not found.' });
+    }
+
+    const groundIndex = city.playground.grounds.indexOf(playgroundName);
+    if (groundIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Playground not found in this city.' });
+    }
+    const imageToRemove = city.playground.img[groundIndex];
+
+    // Step 3: Pull the playground name and image from their respective arrays
+    const result = await db.collection('cities').updateOne(
+      { _id: new ObjectId(cityId) },
+      {
+        $pull: {
+          'playground.grounds': playgroundName,
+          'playground.img': imageToRemove
+        }
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ success: false, message: 'Playground could not be deleted.' });
+    }
+
+    // Step 4 (Optional but recommended): Delete the city if it has no playgrounds left
+    const updatedCity = await db.collection('cities').findOne({ _id: new ObjectId(cityId) });
+    if (updatedCity.playground.grounds.length === 0) {
+      await db.collection('cities').deleteOne({ _id: new ObjectId(cityId) });
+      return res.status(200).json({ success: true, message: 'Playground and empty city deleted successfully!' });
+    }
+
+    res.status(200).json({ success: true, message: 'Playground deleted successfully!' });
+  } catch (err) {
+    console.error('Failed to delete playground:', err);
+    res.status(500).json({ success: false, message: 'Server error while deleting playground.' });
+  }
+});
 
 // Get admin time slots
 app.get('/admintime', async (req, res) => {

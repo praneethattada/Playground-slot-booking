@@ -6,6 +6,11 @@
   min-height: 100vh;
 }
 
+.admin-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
 .admin-view-title {
   text-align: center;
   font-size: 2.5rem;
@@ -24,12 +29,21 @@
   color: #d9534f;
 }
 
-/* Grid layout for cities */
+/* --- UPDATED: Grid layout for cities --- */
 .cities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  /* This forces the grid to have exactly two columns of equal width */
+  grid-template-columns: repeat(2, 1fr);
   gap: 30px;
   margin-bottom: 60px;
+}
+
+/* --- NEW: Responsive rule for smaller screens --- */
+@media (max-width: 768px) {
+  .cities-grid {
+    /* Switch to a single column on mobile */
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Individual city card */
@@ -161,4 +175,36 @@
 }
 .btn-admin.add:hover {
   background-color: #449d44;
+}
+
+.btn-add-city {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 25px;
+  background-color: #2ecc71; /* A nice green color */
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-add-city:hover {
+  background-color: #27ae60;
+}
+
+/* Add these styles to your adminview.css file */
+
+.btn-admin.delete {
+  background-color: #d9534f;
+}
+.btn-admin.delete:hover {
+  background-color: #c9302c;
+}
+
+/* Style for the disabled delete button */
+.btn-admin.delete:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
 }
