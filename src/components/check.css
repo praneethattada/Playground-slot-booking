@@ -219,3 +219,26 @@
   opacity: 1;
   transform: scale(1,1);
 }
+/* ... (keep all your existing styles) ... */
+
+/* Add these new styles for the star ratings */
+.rating-display {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.star-filled {
+  color: #FFD700; /* Gold color for filled stars */
+}
+
+.star-empty {
+  color: #ccc;
+}
+
+.review-count {
+  font-size: 0.9rem;
+  color: #777;
+  margin-left: 8px;
+  vertical-align: middle;
+}

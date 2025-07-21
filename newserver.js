@@ -392,6 +392,77 @@ app.post('/admin/reset-password/:token', async (req, res) => {
   }
 });
 
+
+// In server.js
+
+// --- UPDATED: REVIEWS & RATINGS ENDPOINTS ---
+
+// 1. SUBMIT A NEW REVIEW (User Protected)
+app.post('/reviews', authenticateToken, async (req, res) => {
+  try {
+    // NEW: Accept bookingId in the request
+    const { playgroundName, rating, comment, username, bookingId } = req.body;
+    const userId = req.user.userId;
+
+    if (!bookingId || !playgroundName || !rating || !comment || !username) {
+      return res.status(400).json({ success: false, message: 'All fields are required.' });
+    }
+
+    // --- CORE FIX: Check if a review for this booking already exists ---
+    const existingReview = await db.collection('reviews').findOne({ bookingId: bookingId });
+    if (existingReview) {
+      return res.status(400).json({ success: false, message: 'You have already submitted a review for this booking.' });
+    }
+
+    const newReview = {
+      bookingId, // Store the booking ID with the review
+      playgroundName,
+      userId,
+      username,
+      rating: Number(rating),
+      comment,
+      createdAt: new Date()
+    };
+
+    await db.collection('reviews').insertOne(newReview);
+    res.status(201).json({ success: true, message: 'Thank you for your review!' });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error while submitting review.' });
+  }
+});
+
+
+// 2. GET ALL REVIEWS (No changes needed here for now)
+app.get('/reviews', async (req, res) => {
+  try {
+    const averageRatings = await db.collection('reviews').aggregate([
+      {
+        $group: {
+          _id: "$playgroundName",
+          averageRating: { $avg: "$rating" },
+          reviewCount: { $sum: 1 }
+        }
+      }
+    ]).toArray();
+    res.json({ success: true, data: averageRatings });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error while fetching reviews.' });
+  }
+});
+
+
+// 3. NEW: GET REVIEWS SUBMITTED BY THE CURRENT USER
+app.get('/my-reviews', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const userReviews = await db.collection('reviews').find({ userId: userId }).toArray();
+        res.json({ success: true, data: userReviews });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to fetch your reviews.' });
+    }
+});
+
 // ========== ADMIN ENDPOINTS ========== //
 
 // In server.js

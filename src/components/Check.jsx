@@ -4,8 +4,25 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import "./check.css";
 
+// A small, reusable component to display stars
+const StarRating = ({ rating, count }) => {
+  if (!rating) {
+    return <div className="rating-display">No reviews yet</div>;
+  }
+  const fullStars = Math.round(rating);
+  return (
+    <div className="rating-display">
+      {[...Array(5)].map((_, i) => (
+        <span key={i} className={i < fullStars ? 'star-filled' : 'star-empty'}>★</span>
+      ))}
+      <span className="review-count">({count} {count === 1 ? 'review' : 'reviews'})</span>
+    </div>
+  );
+};
+
 const Check = () => {
   const [cities, setCities] = useState([]);
+  const [ratings, setRatings] = useState([]); // State to hold review data
   const [playground, setPlaygrounds] = useState([]);
   const [playgroundImg, setPlaygroundImages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,21 +30,32 @@ const Check = () => {
   const dispatch = useDispatch();
   const playgroundRef = useRef(null);
 
-  // Load cities data
+  // Load cities and reviews data
   useEffect(() => {
-    const fetchCities = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3003/cities");
-        setCities(response.data.data);
-        setLoading(false);
+        setLoading(true);
+        // Fetch both cities and reviews at the same time for efficiency
+        const [citiesRes, ratingsRes] = await Promise.all([
+          axios.get("http://localhost:3003/cities"),
+          axios.get("http://localhost:3003/reviews")
+        ]);
+
+        if (citiesRes.data.success) {
+          setCities(citiesRes.data.data);
+        }
+        if (ratingsRes.data.success) {
+          setRatings(ratingsRes.data.data);
+        }
       } catch (err) {
-        console.error("Failed to fetch cities:", err);
-        setError("Failed to load cities. Please try again later.");
+        console.error("Failed to fetch data:", err);
+        setError("Failed to load page data. Please try again later.");
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchCities();
+    fetchData();
   }, []);
 
   // Update Redux store when playground data changes
@@ -63,7 +91,7 @@ const Check = () => {
     return (
       <div className="error-container">
         <p className="error-message">{error}</p>
-        <button 
+        <button
           className="retry-button"
           onClick={() => window.location.reload()}
         >
@@ -79,7 +107,7 @@ const Check = () => {
       <div className="cities-grid">
         {cities.map((city, index) => (
           <div key={city._id || index} className="city-card">
-            <div 
+            <div
               className="city-image-container"
               onClick={() => viewPlayground(index)}
             >
@@ -90,7 +118,7 @@ const Check = () => {
               />
               <div className="city-overlay">
                 <div className="box-3">
-                  <div 
+                  <div
                     className="btn btn-three"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -110,27 +138,33 @@ const Check = () => {
       <div ref={playgroundRef} className="playgrounds-section">
         {playground.length > 0 ? (
           <div className="playgrounds-container">
-            {playground.map((ground, index) => (
-              <div key={index} className="playground-card">
-                <div className="playground-image-container">
-                  <img
-                    src={playgroundImg[index]}
-                    alt={ground}
-                    className="playground-image"
-                  />
+            {playground.map((ground, index) => {
+              // Find the rating data for the current playground
+              const groundRating = ratings.find(r => r._id === ground);
+              return (
+                <div key={index} className="playground-card">
+                  <div className="playground-image-container">
+                    <img
+                      src={playgroundImg[index]}
+                      alt={ground}
+                      className="playground-image"
+                    />
+                  </div>
+                  <div className="playground-info">
+                    <h3 className="playground-name">{ground}</h3>
+                    {/* Display the star rating */}
+                    <StarRating rating={groundRating?.averageRating} count={groundRating?.reviewCount} />
+                    <Link
+                      to={`/slotbooking/${index}`}
+                      className="slot-button"
+                      onClick={() => sendIndex(index)}
+                    >
+                      View Available Slots
+                    </Link>
+                  </div>
                 </div>
-                <div className="playground-info">
-                  <h3 className="playground-name">{ground}</h3>
-                  <Link
-                    to={`/slotbooking/${index}`}
-                    className="slot-button"
-                    onClick={() => sendIndex(index)}
-                  >
-                    View Available Slots
-                  </Link>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="no-playgrounds">

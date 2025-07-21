@@ -1,3 +1,4 @@
+/* --- Awesome My Bookings CSS (Complete) --- */
 :root {
   --primary-color: #4a90e2;
   --danger-color: #e74c3c;
@@ -185,4 +186,55 @@
 }
 .bookings-status.error {
   color: var(--danger-color);
+}
+
+.booking-card-footer {
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-review {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-review:hover:not(:disabled) {
+  background-color: #357ABD;
+  transform: translateY(-2px);
+}
+
+.btn-review:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* --- Improved Styles for Interactive Stars --- */
+.rating-interactive {
+  display: flex;
+  flex-direction: row-reverse; /* This makes the hover effect work correctly */
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 5px;
+}
+
+.rating-interactive .star {
+  font-size: 2.5rem;
+  color: #ddd; /* Default empty star color */
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* This class will be toggled by JS for both hover and final selection */
+.rating-interactive .star.hovered,
+.rating-interactive .star.selected {
+  color: #FFD700; /* Gold color for filled stars */
 }
