@@ -1,4 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { AccountContext } from "./accountContext";
 import {
   BoldLink,
   BoxContainer,
@@ -8,118 +12,117 @@ import {
   SubmitButton,
 } from "./common";
 import { Marginer } from "../marginer";
-import { AccountContext } from "./accountContext";
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
-import axios from 'axios'
-import uniqid from 'uniqid'
-import Swal from 'sweetalert2'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 
-export function LoginForm(props) {
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Renamed to AdminLoginForm for clarity
+export function AdminLoginForm(props) { 
   const { switchToSignup } = useContext(AccountContext);
-  var em = /^[a-zA-Z0-9._%+-]+@+[a-zA-Z]+[.org]|[.com]|[.co.in]|[.in]$/
-  var ps=/^[A-Za-z@#$0-9]{1,8}$/
-  var navigate = useNavigate()
-  const [user, setUser] = useState({
-    email: "", password: ""
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
   });
-  const [emailerror, setEmail] = useState()
-  const [passerror, setPassword] = useState()
-  // const [data, setData] = useState()
-  const [status, setStatus] = useState(true)
-  const [endstate, setEnd] = useState()
-  var dispatch = useDispatch()
-  var token = uniqid()
-  const { email, password } = user
-  const [data, setData] = useState([])
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
-  function gettext(e) {
-    setUser({ ...user, [e.target.name]: e.target.value })
-    var emai = user?.email
-    var passwo = user?.password
-
-    if ((emai) && (passwo)) {
-      setStatus(false)
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-    else {
-      setStatus(true)
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!EMAIL_REGEX.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
     }
-
-  }
-
-
-  
-  function onSubmit(e) {
-
-    e.preventDefault()
-    var ema = user?.email
-    var pass = user?.password
-
-    if (!em.test(ema)) {
-      setEmail("Invalid Mail")
+    if (!formData.password) {
+      newErrors.password = "Password is required";
     }
-    // setEnd(true)
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    axios({
-      method: "get",
-      url: "http://localhost:3003/admin"
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-    }).then((res) => {
-      // setData(res.data)
-      // matchData(res.data)
-      const user = res.data.find(
-        (user) => user.email === email && user.password === password
-      )
-      if (user) {
-        // User logged in successfully
-        Swal.fire("Welcome", "You logged in successfully", "success");
-        
-        // console.log(user)
-        dispatch({
-          type: "LOGIN"
-        })
-        dispatch({
-    type: "USERNAME",
-    payload: user?.name
-  })
-        localStorage.setItem("token", token);
-        navigate("/adminview")
-      } else {
-        // Login failed
-        Swal.fire(":(", "Invalid Email or password", "warning");
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3003/admin/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        }
+      );
+
+      // --- FIX: Handle the ADMIN response ---
+      // The server sends back 'admin', not 'user'
+      const { token, admin } = response.data; 
+
+      if (!token || !admin) {
+        throw new Error("Invalid response from server");
       }
 
-    }, (error) => {
-      alert("Database not connected")
-    })
-  }
+      Swal.fire("Welcome Admin!", "You logged in successfully", "success");
 
+      // Store ADMIN token and data in localStorage
+      localStorage.setItem("adminAuthToken", token);
+      localStorage.setItem("admin", JSON.stringify(admin));
+
+      // You might want to dispatch admin-specific actions here if needed
+      // dispatch({ type: "ADMIN_LOGIN", payload: admin });
+
+      // Navigate to the ADMIN dashboard, not the user one
+      navigate("/adminview"); 
+
+    } catch (error) {
+      console.error("Admin Login failed:", error);
+      const errorMessage = error.response?.data?.message || "Invalid email or password.";
+      Swal.fire("Login Failed", errorMessage, "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <BoxContainer>
-      <FormContainer>
-        <Input type="email" placeholder="Email" name="email" onChange={gettext} required/>
-        <p style={{ "color": "red", "textAlign": "left" }}>{emailerror}</p>
-
-        <Input type="password" placeholder="Password" name="password" onChange={gettext} required/>
-
-        {/* <p className="small mb-5 pb-lg-2"><Link to='/forgotpassword' className="text-white-50">Forgot password?</Link></p> */}
-
+      <FormContainer onSubmit={handleSubmit}>
+        <Input
+          type="email"
+          placeholder="Admin Email"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+        />
+        {errors.email && <p style={{ color: "red", textAlign: "left", fontSize: "0.8rem" }}>{errors.email}</p>}
         <Marginer direction="vertical" margin={10} />
-      <MutedLink href=""><Link to='/forgotpassword' className="text-white-50">Forgot password?</Link></MutedLink>
-      <Marginer direction="vertical" margin="1.6em" />
-      <SubmitButton type="submit" onClick={onSubmit} disabled={status ? true : false}>Sign in</SubmitButton>
-      <Marginer direction="vertical" margin="1em" />
+        <Input
+          type="password"
+          placeholder="Password"
+          name="password"
+          value={formData.password}
+          onChange={handleInputChange}
+        />
+        {errors.password && <p style={{ color: "red", textAlign: "left", fontSize: "0.8rem" }}>{errors.password}</p>}
+        <Marginer direction="vertical" margin={10} />
+        <MutedLink href="#">Forgot password?</MutedLink>
+        <Marginer direction="vertical" margin="1.6em" />
+        <SubmitButton type="submit" disabled={isLoading}>
+          {isLoading ? "Signing In..." : "Sign In"}
+        </SubmitButton>
       </FormContainer>
-      {/* <Marginer direction="vertical" margin={10} />
-      <MutedLink href="#">Forget your password?</MutedLink>
-      <Marginer direction="vertical" margin="1.6em" />
-      <SubmitButton type="submit" onClick={onSubmit} disabled={status ? true : false}>Signin</SubmitButton>
-      <Marginer direction="vertical" margin="1em" /> */}
+      <Marginer direction="vertical" margin="1em" />
       <MutedLink href="#">
-        Don't have an accoun?{" "}
+        Don't have an admin account?{" "}
         <BoldLink href="#" onClick={switchToSignup}>
           Sign up
         </BoldLink>

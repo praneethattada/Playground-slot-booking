@@ -1,88 +1,125 @@
-import React from 'react'
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux'
-const BookingDetails = () => {
-    const[slot,setSlot]=useState({})
-    var image = useSelector((state) => state.image)
-    var username = useSelector((state) => state.username)
-    var params = useParams()
-    var index=params.index
-    var idr = params.idr;
-    useEffect(() => {
-        axios({
-            method: "get",
-            url: `http://localhost:3003/postslots/${idr}`
+import Swal from 'sweetalert2';
+import './BookingDetails.css';
 
-        }).then((res) => {
-            setSlot(res.data)
-            // console.log(res.data.name)
-        }, (error) => {
-            alert("Database not connected")
-        })
-    }, [])
-    // console.log(slot.name)
+const BookingDetails = () => {
+  const [booking, setBooking] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Gets the booking ID from the URL
+  const { idr: bookingId } = useParams();
+
+  useEffect(() => {
+    if (!bookingId) {
+        setLoading(false);
+        setError("No booking ID provided.");
+        return;
+    }
+
+    const fetchBookingDetails = async () => {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        setLoading(false);
+        setError('You must be logged in to view this page.');
+        return;
+      }
+      
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+
+      try {
+        const response = await axios.get(`http://localhost:3003/postslots/${bookingId}`, config);
+        
+        if (!response.data?.success) {
+          throw new Error(response.data?.message || 'Booking not found');
+        }
+        
+        setBooking(response.data.data);
+      } catch (err) {
+        const errorMessage = err.response?.data?.message || err.message || 'Failed to load booking details';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookingDetails();
+  }, [bookingId]);
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading booking details...</p>
+      </div>
+    );
+  }
+
+  if (error || !booking) {
+    return (
+      <div className="error-container">
+        <div className="error-message">
+          <h3>Oops! Something went wrong</h3>
+          <p>{error || 'Booking could not be found.'}</p>
+          <Link to="/" className="btn home-button">Back to Home</Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="main" style={{marginBottom:"10%"}}>
-        {/* <section class="vh-100 gradient-custom-2" style={{backgroundColor:"blue"}}> */}
-  <div class="container h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-md-10 col-lg-8 col-xl-6">
-        <div class="card card-stepper" style={{borderRadius: "16px"}}>
-          <div class="card-header p-4">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <p class="text-muted mb-2"> Booking Details<span class="fw-bold text-body"></span></p>
-                
-              </div>
-              
-            </div>
+    <div className="booking-details-container">
+      <div className="booking-card">
+        <div className="card-header">
+          <h2>Booking Confirmation</h2>
+          <p className="booking-reference">Reference: #{booking._id}</p>
+        </div>
+        
+        <div className="card-body">
+          <div className="booking-image-container">
+            {/* This now uses the URL from the database */}
+            <img 
+              src={booking.imageUrl} 
+              alt={booking.name} 
+              className="booking-image"
+            />
           </div>
-          <div class="card-body p-4">
-            <div class="d-flex flex-row mb-4 pb-2">
-              <div class="flex-fill">
-              <img src={image[index]} style={{ height: "100vh", width: "75vh",marginBottom:"10%" }}></img><br></br>
-                <h4 class="bold mb-3">Ground booked: {slot.name}</h4>
-                <p class="text-muted"> </p>
-                <h4 class="mb-3">Name: {slot.username} </h4><br></br>
-                <h4 class="bold mb-3">Booked slots:</h4><br></br>{slot?.slot?.map((s)=>{
-                  return(
-                    <div>
-                    <h4 class="bold mb-3">{s}</h4>
-                    </div>)
-                  
-                })}
-        {/* {slot.slot.map((slot)=>{
-            return(
-                <h4 class="mb-3">{slot}</h4>
-            )
-        })}  */}
-                
-              </div>
-              <div>
-                {/* <img class="align-self-center img-fluid"
-                  src={cakedetail.image} width="250"/> */}
-              </div>
+          
+          <div className="booking-info">
+            <h3>{booking.name}</h3>
+            
+            <div className="info-row">
+              <span className="info-label">Booked by:</span>
+              <span className="info-value">{booking.username}</span>
             </div>
             
-          </div>
-          <div class="card-footer p-4">
-            <div class="d-flex justify-content-between">
-              <h5 class="fw-normal mb-0"><Link to={`/`} class="btn" style={{backgroundColor:"#a3712a"}}>Back to Home</Link></h5>
-              
+            <div className="info-row">
+              <span className="info-label">Date:</span>
+              <span className="info-value">{new Date(booking.date).toLocaleDateString()}</span>
+            </div>
             
+            <div className="time-slots">
+              <h4>Your Time Slots:</h4>
+              <ul>
+                {booking.slots?.map((time, idx) => (
+                  <li key={idx}>{time}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
+        
+        <div className="card-footer">
+          <Link to="/" className="btn primary-btn">Back to Home</Link>
+          <button className="btn secondary-btn" onClick={() => window.print()}>
+            Print Confirmation
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-{/* </section>  */}
-    </div>
-  )
-}
+  );
+};
 
-export default BookingDetails
+export default BookingDetails;

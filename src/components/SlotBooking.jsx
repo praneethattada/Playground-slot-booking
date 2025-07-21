@@ -1,285 +1,231 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { DatePicker } from '@mui/x-date-pickers';
-import Swal from 'sweetalert2'
-import { useNavigate } from 'react-router-dom'
+
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { format } from 'date-fns';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import TextField from '@mui/material/TextField';
-import './Slotbooking.css'
 import Checkbox from '@mui/material/Checkbox';
-import FormLabel from '@mui/material/FormLabel';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { format } from 'date-fns';
+import Swal from 'sweetalert2';
+import './Slotbooking.css';
 
 const SlotBooking = () => {
-const currentDate = new Date();
-const maxDate = new Date();
-maxDate.setDate(currentDate.getDate() + 30);
-const formattedCurrentDate = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
-    console.log(formattedCurrentDate)
-    var navigate = useNavigate()
-    const[show,setShow]=useState()
-    const [selectedDate, setSelectedDate] = useState(null);
-    var token = localStorage.getItem(token)
-    var ground = useSelector((state) => state.ground)
-    // var index = useSelector((state) => state.index)
-    var image = useSelector((state) => state.image)
-    var username = useSelector((state) => state.username)
-    const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
-    var params = useParams()
-    var index = params.index;
-    const[status,setStatusinit]=useState(true)
-    const [dates, setDate] = useState([])
-    const [slots, setSlots] = useState([])
-    const [bookedslots, setpostSlots] = useState([])
-    const [Time, setTimeArray] = useState([])
-    const [bookstatus, setStatus] = useState(true)
-    const [postslot, setPost] = useState({
-        username: username, name: ground[index], date: "", slot: []
-    })
-    // var p=false
-    const { date, slot } = postslot
-    bookedslots?.map((slots)=>{
-        if (slots.username==username){
-            p=true
-        }
-    })
-    function getvalue(e) {
-        // console.log(Time)
-        const currentIndex = selectedCheckboxes.indexOf(e.target.value);
-        const newCheckboxes = [...selectedCheckboxes];
-        // const newCheckboxes = selectedCheckboxes;
+  // Date configuration
+  const currentDate = new Date();
+  const maxDate = new Date();
+  maxDate.setDate(currentDate.getDate() + 30);
 
-        if (currentIndex === -1) {
-            newCheckboxes.push(e.target.value);
-        } else {
-            newCheckboxes.splice(currentIndex, 1);
-        }
+  // Navigation and Redux state
+  const navigate = useNavigate();
+  const { index } = useParams();
+  const ground = useSelector((state) => state.ground);
+  const image = useSelector((state) => state.image);
+  const username = useSelector((state) => state.username);
 
-        setSelectedCheckboxes(newCheckboxes);
-        // setPost({ ...postslot, [e.target.name]: e.target.value })
-        if(!selectedCheckboxes){
-           
-            setShow(false)
-        }
-        // console.log(postslot)
-        e.preventDefault()
+  // Component state
+  const [selectedSlots, setSelectedSlots] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [hasSlotsForGround, setHasSlotsForGround] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(null);
 
+  // Load available slots on component mount
+  useEffect(() => {
+    const fetchAvailableSlots = async () => {
+      try {
+        const response = await axios.get('http://localhost:3003/slots');
+        // FIX 1: Access the 'data' property from the server response
+        setAvailableSlots(response.data.data || []);
+      } catch (error) {
+        console.error('Error fetching slots:', error);
+        Swal.fire('Error', 'Failed to load available slots', 'error');
+      }
+    };
+    fetchAvailableSlots();
+  }, []);
 
+  // Handle date selection
+  const handleDateChange = (date) => {
+    if (!date) {
+      setSelectedDate(null);
+      setTimeSlots([]);
+      return;
     }
-    function newSlot(d, name, difference, idr) {
-        var obj = {
-            name: name,
-            date: d,
-            slot: difference
-        };
+    const formattedDate = format(date, 'yyyy-MM-dd');
+    setSelectedDate(formattedDate);
     
-        axios({
-            method: "put",
-            url: `http://localhost:3003/slots/${name}/${d}`,
-            data: obj
-        }).then((res) => {
-            navigate(`/bookingdetails/${idr}/${index}`);
-        }, (error) => {
-            //alert("Database not connected");
-        });
+    // Filter slots for selected date and ground
+    const matchingSlotDoc = availableSlots.find(
+      (slot) => slot.date === formattedDate && slot.name === ground[index]
+    );
+
+    if (matchingSlotDoc && matchingSlotDoc.slots.length > 0) {
+      setTimeSlots(matchingSlotDoc.slots);
+      setHasSlotsForGround(true);
+    } else {
+      setTimeSlots([]);
+      // Check if any slots exist for this ground at all
+      const anySlotsForGround = availableSlots.some(slot => slot.name === ground[index]);
+      setHasSlotsForGround(anySlotsForGround);
     }
-    var p=1
-    function bookSlot(e) {
-        e.preventDefault();
-        postslot.slot = selectedCheckboxes;
+    setSelectedSlots([]); // Reset selections when date changes
+  };
+
+  // Handle slot selection
+  const handleSlotSelection = (slot) => {
+    setSelectedSlots((prev) =>
+      prev.includes(slot)
+        ? prev.filter((s) => s !== slot)
+        : [...prev, slot]
+    );
+  };
+
+  // Handle booking submission
+  const handleBooking = async (e) => {
+    e.preventDefault();
     
-        // Check if the token is available in localStorage
-        const token = localStorage.getItem("token");
-        if (!token) {
-            navigate("/login");
-            return;
-        }
-    
-        // Set the Authorization header with the token value
-        axios({
-            method: "post",
-            url: ("http://localhost:3003/postslots"),
-            data: postslot,
-        }).then((res) => {
-            // Handle successful response
-            var idr = res.data.id;
-            alert(idr)
-            Swal.fire("Welcome", "You booked your slot successfully", "success");
-            var difference = [];
-            var id, d;
-    
-            slots?.map((slot) => {
-                if (slot.name == postslot?.name && slot.date == postslot?.date) {
-                    var arr1 = slot.slot;
-                    var arr2 = postslot?.slot;
-                    difference = arr1.filter(item => !arr2.includes(item));
-                    console.log(difference);
-                    id = slot.id;
-                    d = slot.date;
-                }
-            });
-            newSlot(d, id, difference, idr);
-        }).catch((error) => {
-            // Handle error response
-            console.error("Error:", error);
-            navigate("/login");
-            alert("An error occurred while booking your slot. Please try again.");
-        });
+    if (selectedSlots.length === 0) {
+      Swal.fire('Error', 'Please select at least one slot', 'error');
+      return;
+    }
+
+    // FIX 2: Use the correct key 'authToken' from localStorage
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      Swal.fire('Error', 'You must be logged in to book slots.', 'error');
+      navigate('/login');
+      return;
     }
     
-    useEffect(() => {
-        loadUsers();
-      }, []);
-    
-      function loadUsers() {
-        axios({
-          method: "get",
-          url: "http://localhost:3003/slots",
-        }).then(
-          (res) => {
-            setSlots(res.data);
-            
-            console.log(res.data);
-            
-          },
-          (error) => {
-            alert("Database not connected");
-          }
+    // FIX 3: Add 'Bearer ' prefix to the Authorization header
+    const authHeaders = { headers: { Authorization: `Bearer ${token}` } };
+
+    try {
+      // 1. Create the booking
+      const bookingData = {
+  username,
+  name: ground[index],
+  date: selectedDate,
+  slots: selectedSlots,
+  imageUrl: image[index] // Add this line
+};
+
+      const bookingResponse = await axios.post(
+        'http://localhost:3003/postslots',
+        bookingData,
+        authHeaders // Use correct headers
+      );
+
+      // 2. Update the available slots document
+      const slotToUpdate = availableSlots.find(
+        (slot) => slot.name === ground[index] && slot.date === selectedDate
+      );
+
+      if (slotToUpdate) {
+        const updatedSlots = slotToUpdate.slots.filter(
+          (slot) => !selectedSlots.includes(slot)
+        );
+
+        // FIX 4: Use '_id' for MongoDB documents, not 'id'
+        await axios.put(
+          `http://localhost:3003/slots/${slotToUpdate._id}`,
+          { slots: updatedSlots },
+          authHeaders // Use correct headers
         );
       }
 
-    return (
-        <div>
-            <form className="main1">
-                <div className="main">
-                <h4 className="gro">{ground[index]}</h4>
-                <img src={image[index]} style={{ height: "50vh", width: "60vh" }} className="image6"></img>
-                </div>
-          
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+      Swal.fire('Success', 'Slot booked successfully!', 'success');
+      navigate(`/bookingdetails/${bookingResponse.data.bookingId}/${index}`);
+    } catch (error) {
+      console.error('Booking error:', error.response?.data || error.message);
+      Swal.fire(
+        'Error',
+        error.response?.data?.message || 'Failed to book slot',
+        'error'
+      );
+    }
+  };
+
+  return (
+    <div className="slot-booking-container">
+      <form className="main1" onSubmit={handleBooking}>
+        <div className="main">
+          <h4 className="gro">{ground[index]}</h4>
+          <img
+            src={image[index]}
+            style={{ height: '50vh', width: '60vh' }}
+            className="image6"
+            alt={ground[index]}
+          />
+        </div>
+
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <div className="date">
-            <DatePicker 
-            maxDate={maxDate}
-            defaultValue={currentDate}
-            // defaultValue={formattedCurrentDate}
-            // label={formattedCurrentDate}
+            <DatePicker
+              label="Select a Date"
+              minDate={currentDate}
+              maxDate={maxDate}
+              onChange={handleDateChange}
+              disablePast
+              // FIX 5: Updated DatePicker props for modern MUI
+              slots={{
+                textField: (params) => <TextField {...params} />
+              }}
               sx={{
-                '& .MuiSvgIcon-root': {
-                    color:" #a3712a",
-                    fontSize: 40, // Increase the font size of the checkbox icon
-                  }
-                 
-                
+                '& .MuiSvgIcon-root': { color: '#a3712a', fontSize: 40 },
               }}
               className="myDatePicker"
-            //   value ={selectedDate}
-            //   slotProps={{ textField: { fullWidth: true } }}
+            />
+          </div>
+        </LocalizationProvider>
 
-            renderinput={(params) => <TextField {...params} />} 
-            onChange={(newValue) => {
-              setStatusinit(true);
-              const d = format(newValue, 'yyyy-MM-dd');
-              setPost({ ...postslot, 'date': d });
-              var p = 0;
-          
-              const matchingSlots = slots.filter(slot => slot.date === d && slot.name === postslot?.name);
-              console.log(matchingSlots);
-              if (matchingSlots.length > 0) {
-                  const combinedTimeArray = matchingSlots.reduce((acc, slot) => acc.concat(slot.slot), []);
-                  setTimeArray(combinedTimeArray);
-              } else {
-                  setTimeArray([]);
-              }
-          
-              if (matchingSlots.length === 0) {
-                  setStatusinit(false);
-              }
-          }} disablePast />
-          
-            
-            <br /><br />
-            </div>
-          </LocalizationProvider>
-          
-    
-                {/* <button className="btn btn-primary" onClick={viewSlot}>See slots</button> */}
-                <div>{
-                    ((status)?
-                    <>
-                    {
-                    Time?.map((slot, index) => {
-                        // setStatusinit(false)
-                        return (
-                            <div className="checkb">
-                                <FormGroup>
-  <FormControlLabel control={<Checkbox type="checkbox" sx={{
-    '& .MuiSvgIcon-root': {
-        color:" #a3712a",
-        fontSize: 40, // Increase the font size of the checkbox icon
-      }
-  }} value={slot} name="slot" onChange={ getvalue } checked={selectedCheckboxes.includes(slot)} />} label={<p
-    sx={{
-      color:"black",
-      fontSize: 100, // Increase the font size of the label
-    }}
-  >
-    {slot}
-  </p>} />
-</FormGroup>
-                            </div>
-
-                        )
-                    })
+        <div className="slots-list">
+          {!hasSlotsForGround ? (
+             <div className="no-slots-message">
+                <h4>No slots available for this ground.</h4>
+             </div>
+          ) : timeSlots.length > 0 ? (
+            timeSlots.map((slot, idx) => (
+              <div key={idx} className="checkb">
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedSlots.includes(slot)}
+                        onChange={() => handleSlotSelection(slot)}
+                        sx={{ '& .MuiSvgIcon-root': { color: '#a3712a', fontSize: 40 } }}
+                      />
                     }
-                </>
-
-                :<div style={{marginLeft:"580px", marginBottom:"50px"}}>
-                    <h4>No slots Available</h4>
-                {/* {setStatusinit(true)} */}
-                </div>
-                )
-                    
-                }</div>
-                {/* <div>
-                    
-
-                    {Time?.map((slot, index) => {
-                        return (
-                            <div className="checkb">
-                                <FormGroup>
-  <FormControlLabel control={<Checkbox type="checkbox" color='secondary' value={slot} name="slot" onChange={ getvalue } checked={selectedCheckboxes.includes(slot)} />} label={slot} />
-</FormGroup>
-                            </div>
-
-                        )
-                    })
-                    }
-                
-
-                </div> */}
-
-
-
-
-
-
-
-                {/* <DatePicker label="Controlled picker" 
-  value={value}
-  onChange={getvalue} /> */}
-            <div>
-            <button class="btn-2 btn-primary me-2" onClick={bookSlot} disabled={show ? true : false} >Book</button>
+                    label={<span className="slot-time">{slot}</span>}
+                  />
+                </FormGroup>
+              </div>
+            ))
+          ) : (
+            <div className="no-slots-message">
+              <h4>
+                {selectedDate ? `No slots available for ${selectedDate}` : 'Please select a date to see available slots'}
+              </h4>
             </div>
-            </form>
+          )}
         </div>
-    )
-}
 
-export default SlotBooking
+        <div className="booking-button-container">
+          <button
+            type="submit" // Use type="submit" for form submission
+            className="btn-2 btn-primary me-2"
+            disabled={selectedSlots.length === 0}
+          >
+            Book Selected Slots
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
+export default SlotBooking;

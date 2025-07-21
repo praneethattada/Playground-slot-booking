@@ -1,201 +1,216 @@
-
-import React from "react";
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-// import { LocalizationProvider } from "@mui/x-date-pickers";
-// import { DatePicker } from "@mui/x-date-pickers";
 import Swal from "sweetalert2";
 import { format } from "date-fns";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { DatePicker } from "@mui/x-date-pickers";
-import TextField from "@mui/material/TextField";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import './adminaddslot.css';
+import TextField from "@mui/material/TextField";
 import Checkbox from '@mui/material/Checkbox';
-import FormLabel from '@mui/material/FormLabel';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { useNavigate } from "react-router-dom";
-import { id } from "date-fns/locale";
+import './adminaddslot.css';
 
-const AdminSlots = () => {
-  const maxDate = new Date();
-  const currentDate = new Date();
-maxDate.setDate(currentDate.getDate() + 30);
-  var ground = useSelector((state) => state.ground);
-  var image = useSelector((state) => state.image);
-  var params = useParams();
-  var navigate=useNavigate()
-  var index = params.index;
-  const [dates, setDate] = useState([]);
-  const[selectedCheckboxes,setSelectedCheckboxes] = useState([]);
-  const [aslot, setSlots] = useState([]);
-  const [postslot, setPost] = useState({
-    id : "",
-    name: ground[index],
-    date: "",
-    slot: "",
-    
-  });
-  function getvalue(e){
-    e.preventDefault()
-    setPost({ ...postslot, [e.target.name]: e.target.value })
-  }
- 
-  function viewSlot(e) {
-    e.preventDefault()
-    const currentIndex = selectedCheckboxes.indexOf(e.target.value);
-        const newCheckboxes = [...selectedCheckboxes];
-        // const newCheckboxes = selectedCheckboxes;
+const AdminAddSlots = () => {
+  const navigate = useNavigate();
+  const { cityId, groundName } = useParams();
 
-        if (currentIndex === -1) {
-            newCheckboxes.push(e.target.value);
+  const [groundImage, setGroundImage] = useState('');
+  const [allTimeSlots, setAllTimeSlots] = useState([]);
+  const [alreadyAddedSlots, setAlreadyAddedSlots] = useState([]);
+  const [bookedByUsers, setBookedByUsers] = useState([]); // New state for booked slots
+  const [newlySelectedSlots, setNewlySelectedSlots] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [allSlotDocs, setAllSlotDocs] = useState([]);
+  const [allBookingDocs, setAllBookingDocs] = useState([]);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('adminAuthToken');
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        
+        const [citiesRes, timeSlotsRes, slotDocsRes, bookingDocsRes] = await Promise.all([
+          axios.get("http://localhost:3003/cities", config),
+          axios.get("http://localhost:3003/admintime", config),
+          axios.get("http://localhost:3003/slots", config),
+          axios.get("http://localhost:3003/postslots", config)
+        ]);
+        
+        const city = citiesRes.data.data.find(c => c._id === cityId);
+        const playgroundIndex = city?.playground.grounds.findIndex(g => g === groundName);
+
+        if (city && playgroundIndex !== -1) {
+          setGroundImage(city.playground.img[playgroundIndex]);
         } else {
-            newCheckboxes.splice(currentIndex, 1);
+          throw new Error("Playground data not found.");
         }
 
-        setSelectedCheckboxes(newCheckboxes);
-    // setPost({...postslot,[e.target.name]:e.target.value});
-  }
-  useEffect(()=>{
-    axios({
-        method: "get",
-        url: "http://localhost:3003/admintime",
-      }).then(
-        (res) => {
-          setSlots(res.data);
-        },
-        (error) => {
-          alert("Database not connected");
-        }
-      )
-  },[])
-  function addSlot(e) {
-    e.preventDefault();
+        setAllTimeSlots(timeSlotsRes.data.data[0]?.slots || []);
+        setAllSlotDocs(slotDocsRes.data.data);
+        setAllBookingDocs(bookingDocsRes.data.data);
 
-    // Retrieve the last object's id from the database
-    axios.get("http://localhost:3003/slots").then((res) => {
-      const lastSlotId = res.data[res.data.length - 1].id; // Assuming _id is the id field in your MongoDB document
+      } catch (err) {
+        console.error("Error fetching initial data:", err);
+        setError("Could not load required data for this page.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInitialData();
+  }, [cityId, groundName]);
 
-      // Add 1 to the last object's id to get the new id for the new slot
-      const newId = lastSlotId + 1;
-
-      // Add the new id to the postslot data
-      postslot.id = newId;
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setNewlySelectedSlots([]);
+    if (date) {
+      const formattedDate = format(date, 'yyyy-MM-dd');
       
-      // Post the slot with the updated data
-      var len = selectedCheckboxes.length;
-      postslot.slot = selectedCheckboxes;
+      const existingAvailableDoc = allSlotDocs.find(
+        doc => doc.name === groundName && doc.date === formattedDate
+      );
+      const existingBookingDocs = allBookingDocs.filter(
+        doc => doc.name === groundName && doc.date === formattedDate
+      );
 
-        // Post the slot with the updated data
-        axios({
-            method: "post",
-            url: "http://localhost:3003/slots",
-            data: {  // Include id in the request body
-              name: postslot.name,
-              date: postslot.date,
-              slot: postslot.slot,
-              id: newId  // Use the newId variable here
-            },
-            headers: {
-                Authorization: localStorage.token,
-            },
-        }).then(
-            (res) => {
-                Swal.fire("Done", `${selectedCheckboxes.length} slots added successfully`, "success");
-                navigate("/adminview");
-            },
-            (error) => {
-                alert("Database not connected");
-            }
+      const available = existingAvailableDoc ? existingAvailableDoc.slots : [];
+      const booked = existingBookingDocs.flatMap(doc => doc.slots);
+
+      setAlreadyAddedSlots(available);
+      setBookedByUsers(booked);
+
+    } else {
+      setAlreadyAddedSlots([]);
+      setBookedByUsers([]);
+    }
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    setNewlySelectedSlots(prev =>
+      checked ? [...prev, value] : prev.filter(item => item !== value)
+    );
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedDate || newlySelectedSlots.length === 0) {
+      Swal.fire("Warning", "Please select a date and at least one new time slot.", "warning");
+      return;
+    }
+
+    setLoading(true);
+    const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+    const token = localStorage.getItem('adminAuthToken');
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+
+    try {
+      const existingDoc = allSlotDocs.find(
+        doc => doc.name === groundName && doc.date === formattedDate
+      );
+      
+      if (existingDoc) {
+        const updatedSlots = [...new Set([...existingDoc.slots, ...newlySelectedSlots])].sort();
+        await axios.put(
+          `http://localhost:3003/slots/${existingDoc._id}`,
+          { slots: updatedSlots },
+          config
         );
-    });
-}
+        Swal.fire("Success", "Slots updated successfully!", "success");
+      } else {
+        const newSlotData = { name: groundName, date: formattedDate, slots: newlySelectedSlots };
+        await axios.post("http://localhost:3003/slots", newSlotData, config);
+        Swal.fire("Success", "Slots added successfully!", "success");
+      }
+      navigate("/adminview");
+    } catch (error) {
+      console.error("Error adding/updating slots:", error);
+      Swal.fire("Error", error.response?.data?.message || "Operation failed", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  if (loading) {
+    return <div className="admin-slots-container"><h2>Loading Playground Data...</h2></div>;
+  }
+
+  if (error) {
+    return (
+      <div className="admin-slots-container error-page">
+        <h2>Oops! Something went wrong.</h2>
+        <p>{error}</p>
+        <Link to="/adminview" className="submit-button">Go Back to Admin Dashboard</Link>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      {/* <h1> hi</h1> */}
-      <form className="main1">
-        <div className="main">
-        <h4 className="gro">{ground[index]}</h4>
-        <img src={image[index]} style={{ height: "50vh", width: "60vh" }} className="image5"></img>
+    <div className="admin-slots-container">
+      <form className="slot-form" onSubmit={handleSubmit}>
+        <div className="ground-info">
+          <h2 className="ground-name">{groundName}</h2>
+          <img src={groundImage} alt={groundName} className="ground-image" />
         </div>
-        <br></br>
-        {/* <input type='date' onChange={getvalue} disablePast name="date"></input><br></br> */}
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <div className="date">
-            <DatePicker disablePast
-            defaultValue={currentDate}
-            maxDate={maxDate}
-            label="Please Select the Date"
-            sx={{
-              '& .MuiSvgIcon-root': {
-                  color:" #a3712a",
-                  fontSize: 40, // Increase the font size of the checkbox icon
-                }
-              }}
-              className="myDatePicker"
-            //   value ={selectedDate}
-            //   slotProps={{ textField: { fullWidth: true } }}
-              renderinput={(params) => <TextField {...params} />} 
-              onChange={(newValue) => {
-                const d=format(newValue, 'yyyy-MM-dd')
-                setPost({ ...postslot, 'date': d })
-              }}
+          <div className="date-picker-container">
+            <DatePicker
+              disablePast
+              label="Select Date"
+              value={selectedDate}
+              onChange={handleDateChange}
+              slots={{ textField: (params) => <TextField {...params} /> }}
             />
-            </div>
-            <br /><br />
-          </LocalizationProvider>
+          </div>
+        </LocalizationProvider>
 
+        <h3 className="slots-header">Select Available Time Slots</h3>
+        <div className="time-slots-container">
+          {allTimeSlots.map((slot, idx) => {
+            const isBooked = bookedByUsers.includes(slot);
+            const isAvailable = alreadyAddedSlots.includes(slot);
+            const isDisabled = isBooked || isAvailable;
 
-        <div>
-        {
-        aslot[0]?.slots?.map((slot, index) => {
-          return (
-          <div>
-            <form>
-                {((postslot?.date)?
-                
-                    <div className="checkb">
-
-              {/* <input type="checkbox" value={slot} name="slot" onChange={viewSlot}
-              checked={selectedCheckboxes.includes(slot)} />
-              <label>{slot}</label> */}
-
-<FormGroup>
-  <FormControlLabel sx={{
-    '& .MuiSvgIcon-root': {
-        color:" #a3712a",
-        fontSize: 30, // Increase the font size of the checkbox icon
-      }
-  }} control={<Checkbox type="checkbox" color="secondary" value={slot} name="slot" onChange={ viewSlot } checked={selectedCheckboxes.includes(slot)} />} label={<h4
-    sx={{
-      color:"black",
-      fontSize: "100px", // Increase the font size of the label
-    }}
-  >
-    {slot}
-  </h4>} />
-  {/* <FormControlLabel required control={<Checkbox />} label="Required" />
-  <FormControlLabel disabled control={<Checkbox />} label="Disabled" /> */}
-</FormGroup>
-
-              
+            return (
+              // FIX: Add a dynamic class based on whether the slot is booked
+              <div key={idx} className={`slot-checkbox ${isBooked ? 'slot-booked' : ''}`}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        value={slot}
+                        disabled={isDisabled}
+                        checked={newlySelectedSlots.includes(slot) || isDisabled}
+                        onChange={handleCheckboxChange}
+                        sx={{
+                          color: '#a3712a',
+                          '&.Mui-checked': { color: '#a3712a' },
+                          '&.Mui-disabled': { color: isBooked ? '#d32f2f' : '#ccc' } // Red if booked, grey if just available
+                        }}
+                      />
+                    }
+                    label={slot}
+                  />
+                </FormGroup>
               </div>
-              :"")}
-            </form>
-          </div>)
-        })}
-                    <button class="btn-8 me-2 addslot" onClick={addSlot}>
-            Add Slot
-          </button>
+            );
+          })}
         </div>
+
+        <button
+          type="submit"
+          className="submit-button"
+          disabled={loading || !selectedDate || newlySelectedSlots.length === 0}
+        >
+          {loading ? "Saving..." : "Save Slots"}
+        </button>
       </form>
     </div>
   );
 };
-export default AdminSlots;
+
+export default AdminAddSlots;

@@ -1,53 +1,149 @@
-*{
-    box-sizing: border-box;
-    /* position: fixed; */
-}
-.date{
-    margin-left: 38%;
-    margin-top: 10%;
-    margin-bottom: 20%;
-    padding-bottom: 10%;
-}
-.table{
-    margin-bottom: 10%;
+.admin-view-slots-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
 }
 
-.btn3{
-    padding: 3px;
-    font-size: large;
-    color: white;
-    box-shadow: 0 15px 18px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+.header-info {
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 30px;
 }
 
-.btn4{
-    font-size: large;
-    padding: 3px;
-    color: white;
-    box-shadow: 0 15px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+.header-info h2 {
+  font-size: 2.5rem;
+  color: #333;
 }
 
+.header-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 20px;
+}
 
-.image4:hover {
-    border-color: #ff80ff;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(3, 1, 1, 0.708);
-    -ms-transform: scale(1.2);
-   -webkit-transform: scale(1.2);
-    transform: scale(1.2); 
-  } 
+.date-picker-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
 
-  .image4but{
-    position: relative;
-    text-align: center;
-  }
+.bookings-table-container {
+  overflow-x: auto;
+}
 
-  .image4{
-    border-radius: 2rem;
-    transition: 1s ease;
-    box-shadow: 10px 10px 5px #a19f9f;
-      -moz-box-shadow: 10px 10px 5px #a19f9f;
-      -webkit-box-shadow: 10px 10px 5px #a19f9f;
-      -khtml-box-shadow: 10px 10px 5px #a19f9f;
-    margin-left: 35%;
-    margin-top: 10%;
-  }
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
+.bookings-table th, .bookings-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.bookings-table th {
+  background-color: #f8f9fa;
+  font-size: 1rem;
+  color: #555;
+  text-transform: uppercase;
+}
+
+.bookings-table td {
+  vertical-align: middle;
+}
+
+.slots-list-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.slot-item {
+  display: flex;
+  align-items: center;
+  background-color: #e9ecef;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+}
+
+.btn-delete-slot {
+  margin-left: 8px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background-color 0.2s;
+}
+.btn-delete-slot:hover {
+  background: #c82333;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-delete-record, .btn-edit-record {
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.btn-delete-record {
+  background-color: #c82333;
+}
+.btn-delete-record:hover {
+  background-color: #a71d2a;
+}
+.btn-edit-record {
+  background-color: #ffc107;
+  color: #212529;
+}
+.btn-edit-record:hover {
+  background-color: #e0a800;
+}
+
+.no-bookings-message {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2rem;
+  color: #777;
+}
+
+/* Error page styles */
+.error-page {
+  text-align: center;
+  padding: 50px;
+}
+.btn-back {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 25px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+}

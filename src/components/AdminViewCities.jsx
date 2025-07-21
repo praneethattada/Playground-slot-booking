@@ -1,185 +1,111 @@
-import React from "react";
-import { useEffect } from "react";
-import { useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { useDispatch } from 'react-redux'
 import './adminview.css';
 
 const AdminViewCities = () => {
-    const [cities, setCities] = useState([]);
-    const [playground, setPlaygrounds] = useState([]);
-    const [playgroundimg, setPlaygroundimages] = useState([]);
-    var dispatch=useDispatch()
-    useEffect(() => {
-      loadCities();
-    }, []);
-    function loadCities() {
-      axios({
-        method: "get",
-        url: "http://localhost:3003/cities",
-      }).then(
-        (res) => {
-          setCities(res.data);
-          // console.log(res.data);
-        },
-        (error) => {
-          alert("Database not connected");
+  // --- State Management ---
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(null); // Store the whole city object
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const playgroundsRef = useRef(null);
+
+  // --- Data Fetching ---
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('adminAuthToken');
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        
+        const response = await axios.get("http://localhost:3003/cities", config);
+        
+        if (response.data?.success) {
+          setCities(response.data.data);
+        } else {
+          throw new Error("Failed to fetch city data.");
         }
-      );
-    }
+      } catch (err) {
+        console.error("Failed to fetch cities:", err);
+        setError("Could not load cities. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const ref = useRef(null);
-    function viewPlayground(index) {
-      setPlaygrounds(cities[index].playground?.grounds);
-      setPlaygroundimages(cities[index].playground?.img);
-      ref.current?.scrollIntoView({behavior: 'smooth'});
-      console.log(index);
-    }
+    fetchCities();
+  }, []);
 
-  
-    // function viewPlayground(index) {
-    //   setPlaygrounds(cities[index].playground?.grounds);
-    //   setPlaygroundimages(cities[index].playground?.img);
-    //   console.log(index);
-    // }
-    useEffect(()=>{
-        dispatch({
-            type:"PLAYGROUND",
-           payload:playground
-        })
-    })
-    useEffect(()=>{
-        dispatch({
-            type:"PLAYGROUNDIMAGES",
-           payload:playgroundimg
-        })
-    })
-  
-    return (
-      <div>
-        <div className="d-flex imgbut">
-        {cities?.map((city, index) => {
-          return (
-            <div className="contain" style={{ alignItems: "" }}>
-              <div
-                onClick={viewPlayground.bind(null, index)}
-                style={{ position: "relative" }}
-                className="dd"
-              >
-                <img
-                  src={city.img}
-                  alt="..."
-                  class="img"
-                  style={{
-                    width: "30rem",
-                    height: "20rem",
-                    marginLeft: "2rem",
-                    marginTop: "10rem",
-                    marginBottom: "15rem",
-                    display: "inline-block",
-                    // position:"absolute"
-                  }}
-                />
-              </div>
-              <div className="middle">
-                {/* <div style={{ position: "relative" }}> */}
-                  {/* <button
-                    onClick={viewPlayground.bind(null, index)}
-                    className="text"
-                    style={{
-                      borderRadius: "2rem",
-                      backgroundColor: "none",
-                      border: "none",
-                      marginTop:"-20rem"
-                    }}
-                  >
-                    <h4
-                      className="fw-bold mb-2 text-uppercase"
-                      style={{
-                        backgroundColor: "white",
-                        color: "black",
-                        marginTop: "1rem",
-                      }}
-                    >
-                      {city.city}
-                    </h4>
-                  </button> */}
-                  <div className="box-3">
-                    <div className="btn btn-three" onClick={viewPlayground.bind(null, index)}>
-                      <span>{city.city}</span>
+  // --- UI Handlers ---
+  const handleViewPlayground = (city) => {
+    setSelectedCity(city);
+    // Use a short timeout to ensure the state is set before scrolling
+    setTimeout(() => {
+      playgroundsRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
+  // --- Render Logic ---
+  if (loading) {
+    return <div className="admin-view-status">Loading cities...</div>;
+  }
+
+  if (error) {
+    return <div className="admin-view-status error">{error}</div>;
+  }
+
+  return (
+    <div className="admin-view-container">
+      <h1 className="admin-view-title">Admin Dashboard: Cities</h1>
+      
+      {/* Cities Section */}
+      <div className="cities-grid">
+        {cities.map((city) => (
+          <div key={city._id} className="city-card-admin" onClick={() => handleViewPlayground(city)}>
+            <img src={city.img} alt={city.city} className="city-image-admin" />
+            <div className="city-overlay-admin">
+              <span>{city.city}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Playgrounds Section */}
+      <div ref={playgroundsRef} className="playgrounds-section-admin">
+        {selectedCity && (
+          <>
+            <h2 className="playgrounds-title">Playgrounds in {selectedCity.city}</h2>
+            <div className="playgrounds-list">
+              {selectedCity.playground.grounds.map((groundName, index) => (
+                <div key={groundName} className="playground-card-admin">
+                  <img src={selectedCity.playground.img[index]} alt={groundName} className="playground-image-admin" />
+                  <div className="playground-info-admin">
+                    <h3>{groundName}</h3>
+                    <div className="playground-actions">
+                      {/* FIX: Pass the city's unique _id and the playground's name in the URL */}
+                      <Link 
+                        to={`/adminviewslots/${selectedCity._id}/${groundName}`} 
+                        className="btn-admin view"
+                      >
+                        View Slots
+                      </Link>
+                      <Link 
+                        to={`/adminaddslots/${selectedCity._id}/${groundName}`} 
+                        className="btn-admin add"
+                      >
+                        Add Slots
+                      </Link>
                     </div>
                   </div>
-                {/* </div> */}
-              </div>{" "}
+                </div>
+              ))}
             </div>
-          );
-        })}
-        </div>
-
-
-             <div ref={ref}>
-        <thead class="table-dark">
-          {/* <tr>
-                            <th scope="col">Sr no.</th>
-                            <th scope="col">Ground</th>
-                            <th scope="col">Ground Name</th>
-                            <th scope="col"></th>
-
-
-                        </tr> */}
-        </thead>
-
-        {playground?.map((playground, index) => {
-          return (
-            <div >
-              <table className="table border shadow">
-                <tbody>
-                  <tr>
-                    <th scope="row">{index + 1}</th>
-                    <td>
-                      <img
-                        style={{ width: "35vw", height: "20vw" }}
-                        src={playgroundimg[index]}
-                        className="image2"
-                      ></img>
-                    </td>
-
-                    <td style={{ alignContent: "flex-start" }}>
-                      <h4
-                        style={{ textEmphasis: "ActiveBorder" }}
-                        className="ptext"
-                      >
-                        {playground}
-                      </h4>
-                    </td>
-  
-                      <td>
-                       <Link exact to ={`/adminviewslots/${index}`}>
-                        <button className="btn1">
-                          View Slots
-                        </button>
-                        </Link><br></br><br></br>
-                        
-                      </td>
-                      <td>
-                       <Link exact to ={`/adminaddslots/${index}`}>
-                        <button className="btn2 ">
-                         Add Slots 
-                        </button>
-                        </Link><br></br><br></br>
-                        
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            );
-          })}
-        </div>
+          </>
+        )}
       </div>
-    );
-  };
-  
+    </div>
+  );
+};
 
-export default AdminViewCities
+export default AdminViewCities;

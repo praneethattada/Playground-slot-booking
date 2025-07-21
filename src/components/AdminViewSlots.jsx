@@ -1,261 +1,214 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 import { format } from "date-fns";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { DatePicker } from "@mui/x-date-pickers";
-import TextField from "@mui/material/TextField";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import TextField from "@mui/material/TextField";
 import "./adminviewslot.css";
 
 const AdminViewSlots = () => {
-  var ground = useSelector((state) => state.ground);
-  const [slots, setSlots] = useState([]);
-  var ground = useSelector((state) => state.ground)
-    var image = useSelector((state) => state.image)
-  const [date, setDate] = useState();
-  const [status, setStatus] = useState(true);
-  var params = useParams();
-  var index = params.index;
-  const maxDate = new Date();
-  const currentDate = new Date();
-maxDate.setDate(currentDate.getDate() + 30);
-  //   useEffect(() => {
-  //     axios({
-  //       method: "get",
-  //       url: "http://localhost:3003/postslots",
-  //     }).then(
-  //       (res) => {
-  //         setSlots(res.data);
-  //           console.log(res.data)
-  //       },
-  //       (error) => {
-  //         alert("Database not connected");
-  //       }
-  //     );
-  //   }, []);
+  // --- State and Hooks ---
+  // FIX 1: Get parameters from the URL, not Redux
+  const { cityId, groundName } = useParams();
+
+  const [groundImage, setGroundImage] = useState('');
+  const [allBookings, setAllBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // --- Data Fetching ---
   useEffect(() => {
-    loadUsers();
-  }, []);
-
-  function loadUsers() {
-    axios({
-      method: "get",
-      url: "http://localhost:3003/postslots",
-    }).then(
-      (res) => {
-        setSlots(res.data);
+    const fetchInitialData = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('adminAuthToken');
+        const config = { headers: { Authorization: `Bearer ${token}` } };
         
-        console.log(res.data);
+        // Fetch both cities and bookings at the same time
+        const [citiesRes, bookingsRes] = await Promise.all([
+          axios.get("http://localhost:3003/cities", config),
+          axios.get("http://localhost:3003/postslots", config)
+        ]);
         
-      },
-      (error) => {
-        alert("Database not connected");
-      }
-    );
-  }
-  function deleteRecord(ind) {
-    axios({
-      method: "delete",
-      url: `http://localhost:3003/postslots/${ind}`,
-    }).then(
-      (res) => {
-        alert("Deleted Record");
-        loadUsers();
-      },
-      (error) => {
-        alert("Database not connected");
-      }
-    );
-  }
-  
+        // Find the specific city and playground to get the image
+        const city = citiesRes.data.data.find(c => c._id === cityId);
+        const playgroundIndex = city?.playground.grounds.findIndex(g => g === groundName);
 
-  function deleteSlot(id, ind) {
-    console.log(id);
-    var slt = [];
-    var slt2 = [];
-    id = id - 1;
+        if (city && playgroundIndex !== -1) {
+          setGroundImage(city.playground.img[playgroundIndex]);
+        } else {
+          throw new Error("Playground data not found.");
+        }
 
-    var name = slots[id]?.name;
-    var username = slots[id]?.username;
-    var date = slots[id]?.date;
-    var time = slots[id]?.slot[ind];
-    console.log(name, username, date, time);
-    slots[id].slot.map((s) => {
-      if (time != s) {
-        slt.push(s);
-      } else if (time == s) {
+        // Set bookings data
+        if (bookingsRes.data?.success) {
+          setAllBookings(bookingsRes.data.data);
+        } else {
+          throw new Error("Failed to fetch bookings.");
+        }
+
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Could not load required data for this page.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchInitialData();
+  }, [cityId, groundName]);
+
+  // --- Filtering Logic ---
+  useEffect(() => {
+    if (selectedDate && allBookings.length > 0) {
+      const formattedDate = format(selectedDate, "yyyy-MM-dd");
+      const bookingsForDate = allBookings.filter(
+        (booking) => booking.name === groundName && booking.date === formattedDate
+      );
+      setFilteredBookings(bookingsForDate);
+    } else {
+      setFilteredBookings([]);
+    }
+  }, [selectedDate, allBookings, groundName]);
+
+  // --- Handlers for Deleting (No changes needed here) ---
+  const handleDeleteRecord = async (bookingId) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const token = localStorage.getItem('adminAuthToken');
+          const config = { headers: { Authorization: `Bearer ${token}` } };
+          await axios.delete(`http://localhost:3003/postslots/${bookingId}`, config);
+          Swal.fire('Deleted!', 'The booking has been deleted.', 'success');
+          // Refresh the list by re-fetching
+          const response = await axios.get("http://localhost:3003/postslots", config);
+          setAllBookings(response.data.data);
+        } catch (err) {
+          Swal.fire('Error!', 'Could not delete the booking.', 'error');
+        }
       }
     });
-    console.log(slt);
-    id = id + 1;
-    putSlot(id, name, username, date, slt);
+  };
+
+  const handleDeleteSlot = async (booking, slotToDelete) => {
+    const updatedSlots = booking.slots.filter(slot => slot !== slotToDelete);
+    if (updatedSlots.length === 0) {
+      handleDeleteRecord(booking._id);
+      return;
+    }
+    try {
+      const token = localStorage.getItem('adminAuthToken');
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      await axios.put(`http://localhost:3003/postslots/${booking._id}`, { slots: updatedSlots }, config);
+      Swal.fire('Success!', 'The time slot has been removed.', 'success');
+      // Refresh the list by re-fetching
+      const response = await axios.get("http://localhost:3003/postslots", config);
+      setAllBookings(response.data.data);
+    } catch (err) {
+      Swal.fire('Error!', 'Could not remove the time slot.', 'error');
+    }
+  };
+
+  // --- Render Logic ---
+  if (loading) {
+    return <div className="admin-view-slots-container"><h2>Loading Bookings...</h2></div>;
   }
 
-  
-  function putSlot(id, name, username, date, slt) {
-    var obj = {
-      username: username,
-      name: name,
-      date: date,
-      slot: slt,
-      id: id,
-    };
-    console.log(obj);
-
-    axios({
-      method: "put",
-      url: `http://localhost:3003/postslots/${id}`,
-      data: obj,
-    }).then(
-      (res) => {
-        alert("Deleted slot");
-        loadUsers();
-      },
-      (error) => {
-        alert("Database not connected");
-      }
+  if (error) {
+    return (
+      <div className="admin-view-slots-container error-page">
+        <h2>Oops! Something went wrong.</h2>
+        <p>{error}</p>
+        <Link to="/adminview" className="btn-back">Go Back to Admin Dashboard</Link>
+      </div>
     );
   }
-  function checkSlots(d){
-    slots?.map((slot, ind) => {
-      if (slot.name == ground[index] && slot.date == d){
-        setStatus(true)
-      }
-  })}
-  
+
   return (
-    <>
-      <div>
-        <br></br>
+    <div className="admin-view-slots-container">
+      <div className="header-info">
+        <h2>{groundName}</h2>
+        <img src={groundImage} alt={groundName} className="header-image" />
       </div>
-      <div className="main">
-                <h4 className="gro">{ground[index]}</h4>
-                <img src={image[index]} style={{ height: "50vh", width: "60vh" }} className="image4"></img>
-                </div>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <div className="date">
-          <DatePicker disablePast
-          defaultValue={currentDate}
-          maxDate={maxDate}
-            label="Please Select the Date"
-            sx={{
-              '& .MuiSvgIcon-root': {
-                  color:" #a3712a",
-                  fontSize: 40, // Increase the font size of the checkbox icon
-                }}}
-            className="myDatePicker"
-            //   value ={selectedDate}
-            //   slotProps={{ textField: { fullWidth: true } }}
-            renderinput={(params) => <TextField {...params} />}
-            onChange={(newValue) => {
-              
-              setStatus(true);
-              const d = format(newValue, "yyyy-MM-dd");
-              console.log(d)
-              setDate(d);
-              // checkSlots(d);
-              var p=0
-              slots?.map((slot, ind) => {
-                if (slot.name == ground[index] && slot.date == d){
-                  p=1
-                  setStatus(true)
-                  
-                }})
-              if (p==0){
-                setStatus(false)
-              }
-            }}
+
+      <div className="date-picker-wrapper">
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="View Bookings For Date"
+            value={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            slots={{ textField: (params) => <TextField {...params} /> }}
           />
-          <br />
-          <br />
-        </div>
-      </LocalizationProvider>
+        </LocalizationProvider>
+      </div>
 
-      {(status)? (
-        <table
-          class="table table-hover"
-          style={{ borderBlockColor: "white"}}
-        >
-          <thead>
-            <tr>
-              <th style={{ color: "black" }}>Action</th>
-              <th style={{ color: "black" }}>Username</th>
-              <th style={{ color: "black" }}>Date</th>
-              <th colSpan={12} style={{ color: "black" }}>
-                Slots Booked
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {slots?.map((slot, ind) => {
-              var id = slot.id;
-              var id1 = slot.id;
-              if (slot.name == ground[index] && slot.date == date) {
-                return (
-                  //   (slot.name==ground[index] && (slot.date==date))?
-                  // <div class="overflow-auto">
-                  
-                  <>
-                    
-                    <tr>
-                    
-                      <td>
+      {!loading && (
+        filteredBookings.length > 0 ? (
+          <div className="bookings-table-container">
+            <table className="bookings-table">
+              <thead>
+                <tr>
+                  <th>Booked By</th>
+                  <th>Booked Slots</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredBookings.map((booking) => (
+                  <tr key={booking._id}>
+                    <td>{booking.username}</td>
+                    <td>
+                      <div className="slots-list-cell">
+                        {booking.slots.map((slot, i) => (
+                          <div key={i} className="slot-item">
+                            <span>{slot}</span>
+                            <button
+                              className="btn-delete-slot"
+                              onClick={() => handleDeleteSlot(booking, slot)}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="action-buttons">
+                        <Link to={`/adminedit/${booking._id}`} className="btn-edit-record">
+                          Edit
+                        </Link>
                         <button
-                          class="btn3 btn-danger"
-                          onClick={deleteRecord.bind(null, ind)}
+                          className="btn-delete-record"
+                          onClick={() => handleDeleteRecord(booking._id)}
                         >
-                          Delete Record
+                          Delete
                         </button>
-                        &nbsp;&nbsp;
-                        {/* <br></br> */}
-                        <Link to={`/adminedit/${ind + 1}`}>
-                          <button class="btn4 btn-warning">Edit Record</button>
-                        </Link>{" "}
-                      </td>
-                      <td>
-                        <b>{slot.username}</b>
-                      </td>
-                      <td>{slot.date}</td>
-                      {/* <td>{slot.slot}</td>  */}
-
-                      {slot?.slot?.map((time, ind) => {
-                        console.log(id1);
-                        return (
-                          // <div class="overflow-auto" >
-                          
-                            <>
-                              <td >{time}</td>
-                              <td>
-                                <button
-                                  class="btn btn-outline-danger"
-                                  onClick={deleteSlot.bind(null, id, ind)}
-                                >
-                                  Delete
-                                </button>
-                              </td>
-                              <br></br>
-                              {/* <td>Delete</td> */}
-                            </>
-                           
-                        )
-                      })}
-                    </tr>
-                   </>
-                );
-              }
-            })}
-          </tbody>
-        </table>
-      ) : (
-        <div style={{marginLeft:"585px",marginBottom:"50px"}}>
-        <h4>  No Slots Booked</h4></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="no-bookings-message">
+            <p>No bookings found for {selectedDate ? format(selectedDate, "MMMM d, yyyy") : 'the selected date'}.</p>
+          </div>
+        )
       )}
-    </>
+    </div>
   );
 };
 
