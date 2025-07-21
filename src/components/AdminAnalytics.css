@@ -1,0 +1,61 @@
+.analytics-container {
+  padding: 40px;
+  background-color: #f0f2f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+}
+
+.analytics-container h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px Apx rgba(0,0,0,0.08);
+  text-align: center;
+  border-left: 5px solid #007bff;
+}
+
+.stat-card h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: #6c757d;
+  text-transform: uppercase;
+}
+
+.stat-card p {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #343a40;
+  margin-bottom: 0;
+}
+
+.chart-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.analytics-status {
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 1.5rem;
+  color: #6c757d;
+}
+
+.analytics-status.error {
+  color: #dc3545;
+}

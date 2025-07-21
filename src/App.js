@@ -16,12 +16,16 @@ import BookingDetails from './components/BookingDetails';
 import ForgetPassword from './components/ForgetPassword';
 import AdminAddCities from './components/AdminAddCIties';
 import AdminEdit from './components/AdminEdit';
-import AdminViewCities from './components/AdminViewCities';
 import AdminViewSlots from './components/AdminViewSlots';
 import AdminAddSlots from './components/AdminAddSlots';
 
-// --- STYLES FIX ---
-// Added 'padding-top' to push content below the navbar.
+// --- NEW: Import the new and renamed admin components ---
+import AdminDashboard from './components/AdminDashboard'; // The new dashboard hub
+import AdminCityManagement from './components/AdminCityManagement'; // Renamed for clarity
+import AdminAnalytics from './components/AdminAnalytics';
+import AdminUserManagement from './components/AdminUserManagement';
+import AdminManualBooking from './components/AdminManualBooking';
+
 const AppContainer = styled.div`
   width: 100%;
   min-height: 90vh;
@@ -30,13 +34,13 @@ const AppContainer = styled.div`
   align-items: center;
   justify-content: center;
   background: linear-gradient(to top, #ffffff 0%, #454545 100%);
-  padding-top: 80px; /* Adjust this value to match your navbar's height */
+  padding-top: 80px;
 `;
 
 const AppCon = styled.div`
   background: linear-gradient(to top, #ffffff 0%, #454545 100%);
-  padding-top: 80px; /* Adjust this value to match your navbar's height */
-  min-height: 90vh; /* Added to ensure it takes up screen height */
+  padding-top: 80px;
+  min-height: 90vh;
 `;
 
 function App() {
@@ -54,13 +58,20 @@ function App() {
         <Route path="/bookingdetails/:idr/:index" element={<AppCon><BookingDetails /></AppCon>} />
         <Route path="/forgotpassword" element={<AppCon><ForgetPassword /></AppCon>} />
 
-        {/* Admin Routes */}
+        {/* --- UPDATED: Admin Routes --- */}
         <Route path="/admin" element={<AppContainer><Account1 /></AppContainer>} />
+        
+        {/* Main admin dashboard hub */}
+        <Route path="/adminview" element={<AppCon><AdminDashboard /></AppCon>} />
+
+        {/* Specific admin management pages */}
+        <Route path="/admin/manage-cities" element={<AppCon><AdminCityManagement /></AppCon>} />
+        <Route path="/admin/analytics" element={<AppCon><AdminAnalytics /></AppCon>} />
+        <Route path="/admin/users" element={<AppCon><AdminUserManagement /></AppCon>} />
+        <Route path="/admin/manual-booking" element={<AppCon><AdminManualBooking /></AppCon>} />
+        
         <Route path="/adminadd" element={<AppCon><AdminAddCities /></AppCon>} />
         <Route path="/adminedit/:id" element={<AppCon><AdminEdit /></AppCon>} />
-        <Route path="/adminview" element={<AppCon><AdminViewCities /></AppCon>} />
-        
-        {/* --- CORRECTED ROUTES --- */}
         <Route path="/adminviewslots/:cityId/:groundName" element={<AppCon><AdminViewSlots /></AppCon>} />
         <Route path="/adminaddslots/:cityId/:groundName" element={<AppCon><AdminAddSlots /></AppCon>} />
         

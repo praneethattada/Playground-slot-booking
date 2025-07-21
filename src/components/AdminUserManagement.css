@@ -1,0 +1,85 @@
+.user-management-container {
+  padding: 40px;
+  max-width: 1200px;
+  margin: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.user-management-container h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th, .users-table td {
+  padding: 18px 20px;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.users-table thead {
+  background-color: #f8f9fa;
+}
+
+.users-table th {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+}
+
+.users-table tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-active { background-color: #28a745; }
+.status-blocked { background-color: #dc3545; }
+
+.btn-status {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn-block { background-color: #dc3545; }
+.btn-block:hover { background-color: #c82333; }
+
+.btn-unblock { background-color: #28a745; }
+.btn-unblock:hover { background-color: #218838; }
+
+.user-management-status {
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 1.5rem;
+  color: #6c757d;
+}
+
+.user-management-status.error {
+  color: #dc3545;
+}

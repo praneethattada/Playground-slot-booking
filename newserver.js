@@ -141,11 +141,13 @@ app.post('/users', async (req, res) => {
 });
 
 // User Login
+// In server.js
+
+// User Login
 app.post('/users/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     
-    // Basic validation
     if (!email || !password) {
       return res.status(400).json({ 
         success: false,
@@ -153,7 +155,6 @@ app.post('/users/login', async (req, res) => {
       });
     }
 
-    // Find user
     const user = await db.collection('users').findOne({ email });
     if (!user) {
       return res.status(401).json({ 
@@ -162,7 +163,16 @@ app.post('/users/login', async (req, res) => {
       });
     }
     
-    // Compare passwords
+    // --- NEW: CHECK IF USER IS BLOCKED ---
+    // This check runs before comparing the password.
+    if (user.status === 'blocked') {
+      return res.status(403).json({ 
+        success: false,
+        message: 'Your account has been blocked. Please contact support.' 
+      });
+    }
+    
+    
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ 
@@ -171,18 +181,12 @@ app.post('/users/login', async (req, res) => {
       });
     }
     
-    // Generate JWT token
     const token = jwt.sign(
-      { 
-        userId: user._id, 
-        email: user.email,
-        role: 'user'
-      },
+      { userId: user._id, email: user.email, role: 'user' },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '1h' }
     );
     
-    // Return response
     res.json({ 
       success: true,
       token,
@@ -291,10 +295,7 @@ app.post('/admin/register', async (req, res) => {
 
 app.post('/admin/login', async (req, res) => {
   try {
-    // ADD THIS LINE to see what the form is sending
-    console.log('--- LOGIN ATTEMPT ---');
-    console.log('1. Received request body:', req.body);
-
+ 
     const { email, password } = req.body;
     
     if (!email || !password) {
@@ -306,8 +307,7 @@ app.post('/admin/login', async (req, res) => {
 
     const admin = await db.collection('admins').findOne({ email });
     
-    // ADD THIS LINE to see what was found in the database
-    console.log('2. Found admin in DB:', admin);
+
     
     if (!admin) {
       return res.status(401).json({ 
@@ -316,21 +316,17 @@ app.post('/admin/login', async (req, res) => {
       });
     }
 
-    // ADD THIS LINE to see the exact values being compared
-    console.log('3. Comparing plain password:', password, 'with hash:', admin.password);
+
 
     const passwordMatch = await bcrypt.compare(password, admin.password);
     
     if (!passwordMatch) {
-      console.log('4. Bcrypt comparison failed.'); // Added for clarity
+
       return res.status(401).json({ 
         success: false,
         message: 'Invalid credentials' 
       });
     }
-
-    // ... rest of your successful login code
-    console.log('5. Bcrypt comparison successful. Logging in.');
 
     const token = jwt.sign(
       { adminId: admin._id, email: admin.email, role: 'admin' },
@@ -353,7 +349,61 @@ app.post('/admin/login', async (req, res) => {
   }
 });
 // ========== SLOT ENDPOINTS ========== //
+// In server.js
 
+// CREATE A BOOKING MANUALLY (Admin Protected)
+app.post('/admin/manual-booking', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const { userId, username, name, date, slots, imageUrl, price } = req.body;
+
+    if (!userId || !username || !name || !date || !slots || !imageUrl) {
+      return res.status(400).json({ success: false, message: 'Missing required booking information.' });
+    }
+
+    const newBooking = {
+      userId,
+      username,
+      name,
+      date,
+      slots,
+      imageUrl,
+      price: price || 0,
+      status: 'confirmed',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    // Step 1: Create the new booking in the 'postslots' collection
+    const result = await db.collection('postslots').insertOne(newBooking);
+
+    // --- NEW LOGIC: UPDATE THE MASTER SLOT LIST ---
+    // Step 2: Find the availability document for that day and playground
+    const availabilityDoc = await db.collection('slots').findOne({ name, date });
+
+    if (availabilityDoc) {
+      // Step 3: Filter out the slots that were just booked
+      const updatedAvailableSlots = availabilityDoc.slots.filter(
+        slot => !slots.includes(slot)
+      );
+
+      // Step 4: Update the document in the 'slots' collection with the new, smaller list
+      await db.collection('slots').updateOne(
+        { _id: availabilityDoc._id },
+        { $set: { slots: updatedAvailableSlots } }
+      );
+    }
+    // --- END OF NEW LOGIC ---
+
+    res.status(201).json({ success: true, message: 'Booking created and availability updated!', bookingId: result.insertedId });
+
+  } catch (err) {
+    console.error("Manual booking error:", err);
+    res.status(500).json({ success: false, message: 'Server error while creating booking.' });
+  }
+});
 // Create slots (admin protected)
 app.post('/slots', authenticateToken, async (req, res) => {
   try {
@@ -772,6 +822,87 @@ app.delete('/cities/:cityId/playgrounds/:playgroundName', authenticateToken, asy
     res.status(500).json({ success: false, message: 'Server error while deleting playground.' });
   }
 });
+// --- ANALYTICS ENDPOINT ---
+app.get('/analytics', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const totalUsers = await db.collection('users').countDocuments();
+    const totalBookings = await db.collection('postslots').countDocuments();
+    
+    const mostBooked = await db.collection('postslots').aggregate([
+      { $group: { _id: "$name", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]).toArray();
+
+    const totalRevenue = await db.collection('postslots').aggregate([
+      { $group: { _id: null, total: { $sum: "$price" } } }
+    ]).toArray();
+
+    res.json({
+      success: true,
+      data: {
+        totalUsers,
+        totalBookings,
+        mostBooked,
+        // FIX: Safely access the total revenue
+        totalRevenue: totalRevenue[0]?.total || 0,
+      }
+    });
+  } catch (err) {
+    console.error("Analytics Error:", err);
+    res.status(500).json({ success: false, message: 'Server error fetching analytics.' });
+  }
+});
+// In server.js, add these two new endpoints
+
+// --- USER MANAGEMENT ENDPOINTS ---
+
+// GET All Users (Admin Protected)
+app.get('/admin/users', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    // Find all users but exclude their passwords from the result
+    const users = await db.collection('users').find({}, { projection: { password: 0 } }).toArray();
+    res.json({ success: true, data: users });
+  } catch (err) {
+    console.error("Failed to fetch users:", err);
+    res.status(500).json({ success: false, message: 'Failed to fetch users.' });
+  }
+});
+
+// UPDATE User Status (Block/Unblock) (Admin Protected)
+app.put('/admin/users/:userId/status', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const { userId } = req.params;
+    const { status } = req.body; // Expecting 'active' or 'blocked'
+
+    if (!['active', 'blocked'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status provided.' });
+    }
+    
+    const result = await db.collection('users').updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { status: status, updatedAt: new Date() } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+    
+    res.json({ success: true, message: `User status has been updated to ${status}.` });
+  } catch (err) {
+    console.error("Failed to update user status:", err);
+    res.status(500).json({ success: false, message: 'Failed to update user status.' });
+  }
+});
 
 // Get admin time slots
 app.get('/admintime', async (req, res) => {
@@ -813,3 +944,5 @@ connectToDB().then(() => {
     console.log(`Server running on port ${PORT}`);
   });
 });
+
+
