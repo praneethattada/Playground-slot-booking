@@ -1,0 +1,58 @@
+/* Barbers.css */
+.barbers-container {
+    padding: 2rem 1rem;
+    width: 100%;
+}
+
+.barbers-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Remove fixed heights and let content determine height */
+.barber-card {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.barber-card-info {
+    padding: 1.5rem;
+    background-color: #f7f7f7;
+}
+
+/* Social icons - adjust as needed */
+.social-icons {
+    /* Your existing social icons styles */
+    /* Remove any fixed height references */
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .barbers-grid {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .barber-card {
+        width: calc(50% - 0.75rem); /* 2 cards per row with gap */
+    }
+}
+
+@media (min-width: 992px) {
+    .barber-card {
+        width: calc(33.333% - 1rem); /* 3 cards per row with gap */
+    }
+}
