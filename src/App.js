@@ -24,6 +24,8 @@ import AdminCityManagement from './components/AdminCityManagement';
 import AdminAnalytics from './components/AdminAnalytics';
 import AdminUserManagement from './components/AdminUserManagement';
 import AdminManualBooking from './components/AdminManualBooking';
+import AdminApproval from './components/AdminApproval';
+
 
 
 const AppContainer = styled.div`
@@ -73,6 +75,7 @@ function App() {
           <Route path="/adminedit/:id" element={<AppCon><AdminEdit /></AppCon>} />
           <Route path="/adminviewslots/:cityId/:groundName" element={<AppCon><AdminViewSlots /></AppCon>} />
           <Route path="/adminaddslots/:cityId/:groundName" element={<AppCon><AdminAddSlots /></AppCon>} />
+          <Route path="/admin/approvals" element={<AppCon><AdminApproval /></AppCon>} />
         </Route>
         
         {/* Catch-all Not Found Route */}

@@ -248,23 +248,18 @@ app.get('/users/:id', authenticateToken, validateObjectId, async (req, res) => {
 
 // ========== ADMIN ENDPOINTS ========== //
 
-// Admin Registration
+// In server.js
+
+// --- 1. UPDATED: Admin Registration Route ---
 app.post('/admin/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
     
     if (!name || !email || !password) {
-      return res.status(400).json({ 
-        success: false,
-        message: 'All fields are required' 
-      });
+      return res.status(400).json({ success: false, message: 'All fields are required' });
     }
-
     if (await db.collection('admins').findOne({ email })) {
-      return res.status(400).json({ 
-        success: false,
-        message: 'Admin already exists' 
-      });
+      return res.status(400).json({ success: false, message: 'Admin with this email already exists' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -272,60 +267,45 @@ app.post('/admin/register', async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      status: 'pending', // New admins are now pending by default
       createdAt: new Date(),
       updatedAt: new Date()
     });
 
     res.status(201).json({
       success: true,
-      message: 'Admin registered successfully',
+      message: 'Admin registration successful! Your account is pending approval.',
       adminId: result.insertedId
     });
   } catch (err) {
-    console.error('Failed to register admin:', err);
-    res.status(500).json({ 
-      success: false,
-      message: 'Failed to register admin' 
-    });
+    res.status(500).json({ success: false, message: 'Failed to register admin' });
   }
 });
 
-// Admin Login
-// In server.js
 
+// --- 2. UPDATED: Admin Login Route ---
 app.post('/admin/login', async (req, res) => {
   try {
- 
     const { email, password } = req.body;
-    
-    if (!email || !password) {
-      return res.status(400).json({ 
-        success: false,
-        message: 'Email and password are required' 
-      });
-    }
-
     const admin = await db.collection('admins').findOne({ email });
-    
 
-    
     if (!admin) {
-      return res.status(401).json({ 
-        success: false,
-        message: 'Invalid credentials' 
-      });
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
-
+    // NEW: Check if the admin's status is pending
+    if (admin.status === 'pending') {
+      return res.status(403).json({ success: false, message: 'Your account is still pending approval.' });
+    }
+    
+    // NEW: Check if the admin's status is active
+    if (admin.status !== 'active') {
+        return res.status(403).json({ success: false, message: 'Your account is not active.' });
+    }
 
     const passwordMatch = await bcrypt.compare(password, admin.password);
-    
     if (!passwordMatch) {
-
-      return res.status(401).json({ 
-        success: false,
-        message: 'Invalid credentials' 
-      });
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
     const token = jwt.sign(
@@ -334,20 +314,64 @@ app.post('/admin/login', async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    res.json({
-      success: true,
-      message: 'Login successful',
-      token,
-      admin: excludePassword(admin)
-    });
+    res.json({ success: true, token, admin: excludePassword(admin) });
   } catch (err) {
-    console.error('Failed to authenticate admin:', err);
-    res.status(500).json({ 
-      success: false,
-      message: 'Failed to authenticate' 
-    });
+    res.status(500).json({ success: false, message: 'Failed to authenticate' });
   }
 });
+
+
+// --- 3. NEW: Routes for Managing Approvals ---
+
+// GET all pending admin requests (Admin Protected)
+app.get('/admin/pending', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ success: false, message: 'Forbidden' });
+  try {
+    const pendingAdmins = await db.collection('admins').find({ status: 'pending' }, { projection: { password: 0 } }).toArray();
+    res.json({ success: true, data: pendingAdmins });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to fetch pending admins.' });
+  }
+});
+
+// UPDATE an admin's status to 'active' (Admin Protected)
+app.put('/admin/approve/:adminId', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ success: false, message: 'Forbidden' });
+  try {
+    const { adminId } = req.params;
+    const result = await db.collection('admins').updateOne(
+      { _id: new ObjectId(adminId), status: 'pending' },
+      { $set: { status: 'active', updatedAt: new Date() } }
+    );
+    if (result.matchedCount === 0) return res.status(404).json({ success: false, message: 'Pending admin not found.' });
+    res.json({ success: true, message: 'Admin approved successfully.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to approve admin.' });
+  }
+});
+// REJECT a pending admin request (delete the user) (Admin Protected)
+app.delete('/admin/reject/:adminId', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Forbidden' });
+  }
+  try {
+    const { adminId } = req.params;
+    const result = await db.collection('admins').deleteOne({ 
+      _id: new ObjectId(adminId), 
+      status: 'pending' 
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, message: 'Pending admin not found.' });
+    }
+    
+    res.json({ success: true, message: 'Admin request rejected successfully.' });
+  } catch (err) {
+    console.error("Failed to reject admin:", err);
+    res.status(500).json({ success: false, message: 'Failed to reject admin.' });
+  }
+});
+
 // ========== SLOT ENDPOINTS ========== //
 // In server.js
 

@@ -79,6 +79,16 @@ const AdminDashboard = () => {
           </Link>
         </motion.div>
 
+        <motion.div variants={cardVariants}>
+            <Link to="/admin/approvals" className="dashboard-card-awesome">
+                <div className="card-icon-awesome icon-approval">✅</div>
+                <div className="card-body-awesome">
+                    <h3>Admin Approvals</h3>
+                    <p>Review and approve new admin registration requests.</p>
+                    </div>
+                    </Link>
+        </motion.div>
+
       </motion.div>
     </div>
   );
